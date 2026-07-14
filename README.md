@@ -49,6 +49,10 @@ WebSocket-Unterstützung. Das Image enthält die Extension bereits – bei jeder
 Die Quellen der Extension liegen unter [`branding/src/`](branding/)
 (CSS, SVGs, Schriften, Übersetzungen, HTML-Patches). Build-Anleitung und
 Implementierungsdetails: [`branding/README.md`](branding/README.md).
+Die fertig gebaute Extension liegt jedem
+[Release](https://github.com/keco216/kevin-connection-manager/releases) als
+`.jar` bei – für den Einsatz in einem bestehenden Guacamole 1.6.0 genügt es,
+sie in dessen `GUACAMOLE_HOME/extensions` abzulegen.
 Automatisierte Sichtprüfung gegen den laufenden Stack:
 [`scripts/branding-verify.mjs`](scripts/branding-verify.mjs) (Playwright).
 

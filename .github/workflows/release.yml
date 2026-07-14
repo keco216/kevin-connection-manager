@@ -1,0 +1,51 @@
+# Release-Workflow: läuft bei Versions-Tags (v*). Baut das Guacamole-Image
+# mit eingebauter Branding-Extension und pusht es UNVERÄNDERLICH unter dem
+# Versions-Tag (Rollback-Punkt) – die wandernden Tags 1.6.0/latest verwaltet
+# weiterhin build-image.yml auf main. Existiert zum Tag noch kein
+# GitHub-Release, wird eines mit automatischen Notes erstellt; in beiden
+# Fällen wird die Extension-.jar als Asset hinterlegt.
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/keco216/kcm-guacamole:${{ github.ref_name }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/keco216/kevin-connection-manager
+            org.opencontainers.image.version=${{ github.ref_name }}
+            org.opencontainers.image.description=Apache Guacamole 1.6.0 mit Kevin-Branding-Extension (Keeper-Look)
+
+      - name: GitHub-Release sicherstellen und Extension-Jar anhängen
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${{ github.ref_name }}"
+          JAR="guacamole-home/extensions/kevin-branding-1.0.0.jar"
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$JAR" --clobber --repo "$GITHUB_REPOSITORY"
+          else
+            gh release create "$TAG" "$JAR" --verify-tag --generate-notes \
+              --title "$TAG" --repo "$GITHUB_REPOSITORY"
+          fi
