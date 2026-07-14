@@ -3,13 +3,12 @@
 # erzeugt das DB-Schema, PostgreSQL 15, guacd mit Laufwerks-/Aufzeichnungs-Volumes,
 # Guacamole auf Port 7070 (der NPM zeigt bereits dorthin und terminiert TLS).
 #
-# Einziger Unterschied zum alten Stack: Das Guacamole-Image kommt von GHCR und
-# enthält die Kevin-Branding-Extension bereits – der frühere Bind-Mount
-# /opt/guacamole/branding:/etc/guacamole/extensions entfällt ersatzlos.
+# Das Guacamole-Image kommt von GHCR und enthält die Kevin-Branding-Extension
+# bereits; es läuft auf dem wandernden Tag "latest" und wird vom mitgelieferten
+# Watchtower-Service (Label-gescoped, nur dieser eine Container) jede Nacht um
+# 04:00 automatisch aktualisiert.
 #
 # Vor dem Deploy in Portainer die Stack-Umgebungsvariable POSTGRES_PASSWORD setzen!
-version: "3.8"
-
 services:
   guacinit:
     image: guacamole/guacamole:1.6.0
@@ -47,8 +46,11 @@ services:
 
   guacamole:
     # Offizielles guacamole/guacamole:1.6.0 plus Kevin-Branding-Extension
-    # (gebaut von .github/workflows/build-image.yml aus diesem Repo)
-    image: ghcr.io/keco216/kcm-guacamole:1.6.0
+    # (gebaut von .github/workflows/build-image.yml aus diesem Repo).
+    # "latest" wandert mit jedem Extension-Update; Watchtower (unten) zieht
+    # es nachts automatisch nach. Rollback: auf ein festes vX.Y.Z-Tag pinnen
+    # (siehe GitHub-Releases).
+    image: ghcr.io/keco216/kcm-guacamole:latest
     container_name: guacamole
     depends_on:
       - guacd
@@ -66,6 +68,25 @@ services:
     ports:
       # NPM ist auf diesen Port eingestellt – nicht ändern
       - "7070:8080"
+    restart: unless-stopped
+    labels:
+      # Einziger Container, den Watchtower aktualisieren darf
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  watchtower:
+    # Aktualisiert AUSSCHLIESSLICH Container mit dem enable-Label (oben nur
+    # guacamole – guacd/Postgres und fremde Stacks wie Passbolt/RustDesk
+    # bleiben unberührt). Update-Fenster: täglich 04:00 – Watchtower ersetzt
+    # den Container, laufende Sitzungen würden sonst tagsüber abbrechen.
+    # Läuft auf dem Host bereits ein eigener Watchtower, diesen Service
+    # weglassen und dort --label-enable verwenden.
+    image: containrrr/watchtower:1.7.1
+    container_name: guacamole_watchtower
+    command: --label-enable --cleanup --schedule "0 0 4 * * *"
+    environment:
+      TZ: Europe/Berlin
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
 
 volumes:

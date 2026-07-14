@@ -41,8 +41,12 @@ anmelden – das Passwort direkt unter *Einstellungen → Benutzer* ändern.
 Stack aus [`deploy/docker-compose.portainer.yml`](deploy/docker-compose.portainer.yml)
 anlegen und die Stack-Umgebungsvariable `POSTGRES_PASSWORD` setzen. Guacamole
 lauscht auf **Port 7070**; davor gehört ein Reverse-Proxy mit TLS und
-WebSocket-Unterstützung. Das Image enthält die Extension bereits – bei jeder
-Änderung an `guacamole-home/` oder `Dockerfile` baut die GitHub Action es neu.
+WebSocket-Unterstützung. Das Image enthält die Extension bereits; der Stack
+folgt dem `latest`-Tag und aktualisiert sich über den mitgelieferten,
+auf diesen einen Container begrenzten Watchtower-Dienst jede Nacht von
+selbst. Zum Festnageln einer Version stattdessen ein `vX.Y.Z`-Tag aus den
+[Releases](https://github.com/keco216/kevin-connection-manager/releases)
+eintragen.
 
 ## Anpassen
 
