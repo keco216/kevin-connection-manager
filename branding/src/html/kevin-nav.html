@@ -1,0 +1,11 @@
+<!-- App-Bar-Navigation im Keeper-Stil: "Meine Verbindungen" und
+     "Einstellungen" rechts neben dem Benutzer-Menü. Offizieller
+     Extension-Mechanismus (HTML-Patch): wird vor dem Angular-Compile
+     in jedes Template eingefügt, das ein guac-user-menu enthält;
+     im schmalen Sitzungsmenü (#guac-menu) blendet kevin.css die
+     Leiste wieder aus. -->
+<meta name="before" content="guac-user-menu">
+<nav class="kevin-nav">
+    <a class="kevin-nav-link" href="#/" translate="KEVIN.NAV_CONNECTIONS"></a>
+    <a class="kevin-nav-link" href="#/settings/preferences" translate="KEVIN.NAV_SETTINGS"></a>
+</nav>

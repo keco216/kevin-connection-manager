@@ -1,15 +1,47 @@
-# Kevin Branding – Theme-Extension für die Original-Guacamole-UI (M7 v1)
+# Kevin Branding – Theme-Extension für die Original-Guacamole-UI (M7 v1 + M7.1)
 
 Bringt die unter `/guacamole/` erreichbare Original-UI (Admin-Fallback) ins Kevin-Design:
 Navy-Hintergrund und K-Logo auf dem Login, Kopfleiste in Navy mit gelbem Akzent,
 Buttons/Links in Primärblau, App-Name „Kevin Connection Manager" (via Übersetzungs-Override
 `APP.NAME`, deutsch und englisch). Kein Struktur-Umbau der AngularJS-UI – reines Branding.
+Seit M7.1 zusätzlich: selbst gehostete IBM-Plex-Schrift (WOFF2 in der .jar), Pager im
+Keeper-Look, Bildschirmtastatur, Recording-Player und die Sonderansichten der index-Ebene
+(429-Sperre/„Abgemeldet"/fataler Fehler) im Kevin-Design.
 
 ## Aufbau im Repo
 
 - `branding/src/` – Quellen der Extension; `guac-manifest.json` muss im **Root** der
   .jar liegen (deshalb wird aus `src/` heraus gepackt)
 - `guacamole-home/extensions/kevin-branding-1.0.0.jar` – gebaute Extension
+
+## HTML-Patches (App-Bar-Navigation)
+
+Guacamole-Extensions dürfen neben CSS auch **HTML-Patches** liefern
+(`"html"` im Manifest) – der offizielle Weg, Elemente in die UI einzufügen,
+ohne das Original anzufassen. Ein Patch-File enthält `<meta name="OP"
+content="CSS-SELEKTOR">`-Direktiven (OP: before / after / replace /
+before-children / after-children / replace-children); das übrige Markup
+wird beim Laden JEDES Angular-Templates, in dem der Selektor matcht,
+VOR dem Compile eingefügt – `translate`-Attribute funktionieren also.
+`html/kevin-nav.html` hängt so die Keeper-Navigation („Meine
+Verbindungen", „Einstellungen", Keys `KEVIN.NAV_*` aus den
+Übersetzungs-Overrides) vor jedes `guac-user-menu`; im schmalen
+Sitzungsmenü blendet kevin.css sie aus (`#guac-menu .kevin-nav`).
+Achtung: EIN Patch-File = EIN Markup-Block – bei mehreren
+Meta-Direktiven im selben File wird derselbe Block mehrfach eingefügt.
+
+## Extension-JS (Favicon)
+
+Die `<link rel="icon">`-Tags stehen in der index.html – KEIN
+Angular-Template, HTML-Patches greifen dort nicht. Dafür liefert die
+Extension `js/kevin-favicon.js` (`"js"` im Manifest, wird in das
+gebündelte `app.js` der Webapp aufgenommen und nach dem DOM-Aufbau
+ausgeführt): entfernt Guacamoles Favicon-/Touch-Icon-Links, setzt das
+K-Logo (`kevin-logo.svg`, bereits Extension-Ressource) als
+SVG-Favicon und `meta[name=theme-color]` auf Marken-Navy – Vivaldi &
+Co. färben den Tab sonst nach dem grünen Stock-Logo ein. Browser
+cachen Favicons hartnäckig: Nach dem Update ggf. neuer Tab oder
+Browser-Neustart statt nur F5.
 
 Die Verdrahtung übernimmt `docker-compose.yml` (Service `guacamole`):
 `GUACAMOLE_HOME: /opt/kevin/guacamole-home` plus Read-only-Volume
@@ -81,6 +113,14 @@ Login sollte navy mit K-Logo erscheinen.
   Startseiten-Link verliert sein href, wenn er der aktuelle Ort ist);
   den aktuellen Ort markiert Stock mit `a.current` und `opacity:.25`
   (→ lesbares Grau), Aktions-Links (Abmelden) haben nie ein href.
+  **Hover-Regeln NUR mit background-color:** Das background-Shorthand
+  löscht die Zeilen-Icons (background-image) beim Hover – Abmelden und
+  Vollbild verloren so ihr Icon unterm Cursor (gefixt). **Vollbild im
+  Sitzungsmenü trägt KEINE Klasse** (Guacamole-Tippfehler `classname:`
+  statt `className:` in der Action-Definition) – das eigene
+  `menu-fullscreen.svg` hängt deshalb an der Listen-Position
+  `ul.action-list > li:nth-child(2) > a`; bei einem Guacamole-Upgrade
+  prüfen, ob der Tippfehler gefixt wurde (dann besser `a.fullscreen`).
   Die `.header`-Grundlinie (border-bottom) braucht `!important` –
   und damit auch die gelbe Akzentkante der App-Bar.
   **ACHTUNG verschachtelte page-list:** Die page-list im Menü enthält
@@ -125,6 +165,61 @@ Login sollte navy mit K-Logo erscheinen.
   Hülle, Angular befüllt den Baum nicht). Die Extension stylt Feld
   (weiß in der Navy-Bar) und Baum-Karte; text-transform:none nötig,
   sonst erben die Einträge das VERSAL der Kopfzeilen-h2.
+- **Schrift (IBM Plex, M7.1):** WOFF2-Schnitte liegen unter `src/fonts/`
+  (Sans 400/500/600/700 + Mono 400, „complete"-Builds von github.com/IBM/plex,
+  SIL-OFL-Lizenz liegt bei) und sind im Manifest als Ressourcen (`font/woff2`)
+  deklariert. `@font-face` in kevin.css lädt sie über
+  `app/ext/kevin-branding/fonts/…`; die Aktivierung braucht `body { font-family
+  … !important }`, weil Stocks `body{font-family:Carlito,…}` dieselbe
+  Spezifität hat und später lädt. Kursive Schnitte sind bewusst nicht dabei.
+- **Pager-Pfeile (M7.1):** Stock legt die Pfeil-SVGs als `background-image`
+  auf `.pager .icon.first/prev/next/last-page` (24px-`.icon`-Metrik). Kevin:
+  `background:#fff` (löscht das Stock-Bild mit), 30px-Kästchen wie
+  `.set-page`, eigenes Chevron als mask-::before in currentColor; linke
+  Varianten per `transform: scaleX(-1)` am ::before (nicht am Kästchen,
+  sonst wandert der 1px-Rahmen). `.set-page.current` braucht
+  `border-radius !important` – Stock setzt dort `.2em` auf gleicher
+  Spezifität.
+- **Bildschirmtastatur (M7.1):** `.keyboard-container` (Stock #222,
+  opacity .85) → Navy mit gelber 2px-Oberkante, opacity 1. Tasten
+  `--kb-osk-key`/`--kb-osk-key-border`, Zustände: `.highlight` Primary,
+  `.guac-keyboard-pressed` Primary-Hover mit Accent-Rand, aktive Modifier
+  (Selektorliste 1:1 aus dem Stock-CSS: modifier-shift/-caps/-control/
+  -alt/-alt-gr/-super) Accent-Gelb mit Navy-Schrift. Alles !important
+  (gleiche Spezifität wie Stock). Test ohne echte Session: Verbindung auf
+  `203.0.113.1` (Dauer-Spinner), Menü → Bildschirmtastatur.
+- **Sonderansichten der index-Ebene (M7.1):** Die drei applicationState-
+  Modals AUSSERHALB der login-ui (`.logged-out-modal`,
+  `.automatic-login-rejected-modal`, `.fatal-page-error-modal`) sind
+  weiße Kevin-Karten (K-Logo als ::before) auf Navy-`guac-modal`.
+  WICHTIG zur 429-Sperre: Der gebannte POST /tokens liefert
+  `type: BAD_REQUEST` – die Sonderansicht erscheint aber NUR, wenn die
+  login-ui noch nicht offen war (z. B. Login über URL-Parameter). Der
+  Normalfall (Login-Versuch in der offenen login-ui während Sperre)
+  landet als `.login-error` IN der login-ui – beide Wege zeigen die
+  deutsche Meldung aus unserer de.json (`LOGIN.ERROR_TOO_MANY_ATTEMPTS`
+  fehlt im 1.6.0-Sprachpaket). Reproduktion der Sonderansicht:
+  `/guacamole/?username=x&password=y` bei aktiver Sperre aufrufen.
+- **Recording-Player (M7.1, ungeprüft bis M8):** Ladekreis
+  (`guac-player-progress-indicator`, Stock #5af) → Accent; Steuerleiste
+  → Navy-transparent; Seek ist ein `input type="range"` → `accent-color`;
+  `.guac-player-button` → Primärbutton. Nach Stock-Selektoren gebaut,
+  echte Sichtprüfung erst mit Session-Recording (M8).
+- **Versteckte Service-textareas (Weißer-Kasten-Bug, gefixt):** Guacamole
+  hängt zwei unsichtbare textareas DIREKT an den body: die Zwischenablage-
+  Synchronisation (`.clipboard-service-target`, Stock parkt sie 1em×1em bei
+  `left:-1em` – exakt außerhalb) und den 0×0-Tastatur-Sink (Inline-Styles,
+  ohne Klasse). Die generische Feld-Metrik (`textarea { padding; border }`)
+  machte das Clipboard-Element 22px breit → 8px weißer Streifen ragte in
+  den Viewport, dank `overflow:hidden` MIT Resize-Griff: einmal angefasst
+  wurde daraus ein großer weißer Kasten (in RDP-Sitzungen aufgefallen;
+  beim Fenster-Fokuswechsel bekam er zusätzlich unseren Fokus-Ring).
+  Fix in kevin.css: `body > textarea` neutralisieren (padding/border/
+  background weg, `resize:none`, `pointer-events:none`) + `opacity:0`,
+  und die Fokus-Ring-Regel nimmt `body > textarea` per
+  `:not(:where(…))` aus. NIEMALS `display:none`/`visibility:hidden` –
+  der Service braucht das Element fokussier-/selektierbar, sonst bricht
+  die Zwischenablage der Original-UI.
 - **v1-Vorbehalt:** Die CSS-Selektoren zielen auf die bekannten Klassen der
   Stock-UI (`.login-ui`, `.login-dialog .logo`, `.header`, Buttons). Einzelne
   Elemente können je nach 1.6-Feinheiten noch unverändert bleiben – dann per

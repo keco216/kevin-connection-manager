@@ -5,11 +5,23 @@
     "css": [
         "css/kevin.css"
     ],
+    "html": [
+        "html/kevin-nav.html"
+    ],
+    "js": [
+        "js/kevin-favicon.js"
+    ],
     "translations": [
         "translations/en.json",
         "translations/de.json"
     ],
     "resources": {
+        "fonts/IBMPlexSans-Regular.woff2": "font/woff2",
+        "fonts/IBMPlexSans-Medium.woff2": "font/woff2",
+        "fonts/IBMPlexSans-SemiBold.woff2": "font/woff2",
+        "fonts/IBMPlexSans-Bold.woff2": "font/woff2",
+        "fonts/IBMPlexMono-Regular.woff2": "font/woff2",
+        "fonts/LICENSE-IBM-Plex-OFL.txt": "text/plain",
         "images/kevin-logo.svg": "image/svg+xml",
         "images/chevron-right.svg": "image/svg+xml",
         "images/chevron-down.svg": "image/svg+xml",
@@ -33,6 +45,9 @@
         "images/menu-settings.svg": "image/svg+xml",
         "images/menu-logout.svg": "image/svg+xml",
         "images/menu-disconnect.svg": "image/svg+xml",
-        "images/field-globe.svg": "image/svg+xml"
+        "images/field-globe.svg": "image/svg+xml",
+        "images/pager-chevron.svg": "image/svg+xml",
+        "images/pager-chevron-double.svg": "image/svg+xml",
+        "images/menu-fullscreen.svg": "image/svg+xml"
     }
 }

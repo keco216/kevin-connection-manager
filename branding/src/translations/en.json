@@ -2,6 +2,10 @@
     "APP" : {
         "NAME" : "Kevin Connection Manager"
     },
+    "KEVIN" : {
+        "NAV_CONNECTIONS" : "My Connections",
+        "NAV_SETTINGS" : "Settings"
+    },
     "CLIENT" : {
         "TEXT_CLIENT_STATUS_CONNECTING" : "Connecting to Kevin Connection Manager...",
         "TEXT_CLIENT_STATUS_WAITING" : "Connected to Kevin Connection Manager. Waiting for response...",

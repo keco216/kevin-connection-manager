@@ -35,6 +35,62 @@
     --kb-shadow-login-card: 0 24px 70px rgba(4, 10, 24, 0.5);
     --kb-shadow-menu: 0 10px 30px rgba(15, 30, 61, 0.16);
     --kb-shadow-card: 0 1px 3px rgba(15, 30, 61, 0.05), 0 10px 30px rgba(15, 30, 61, 0.07);
+    --kb-osk-key: #1E3355;
+    --kb-osk-key-border: #33496F;
+}
+
+/* ---------- Schrift: IBM Plex (M7.1, self-hosted in der .jar) ----------
+   WOFF2-Dateien liegen als Extension-Ressourcen unter fonts/ – url()
+   löst wie bei den Bildern relativ zur Dokument-Basis /guacamole/ auf.
+   font-display: swap – bis Plex da ist, rendert Stocks Carlito. */
+@font-face {
+    font-family: 'IBM Plex Sans';
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    src: url('app/ext/kevin-branding/fonts/IBMPlexSans-Regular.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'IBM Plex Sans';
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+    src: url('app/ext/kevin-branding/fonts/IBMPlexSans-Medium.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'IBM Plex Sans';
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+    src: url('app/ext/kevin-branding/fonts/IBMPlexSans-SemiBold.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'IBM Plex Sans';
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+    src: url('app/ext/kevin-branding/fonts/IBMPlexSans-Bold.woff2') format('woff2');
+}
+
+/* Mono für Zwischenablage-Hinweis & Co. (kevin.css referenziert die
+   Familie bereits – bisher fiel sie auf Consolas zurück) */
+@font-face {
+    font-family: 'IBM Plex Mono';
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    src: url('app/ext/kevin-branding/fonts/IBMPlexMono-Regular.woff2') format('woff2');
+}
+
+/* Stock: body{font-family:Carlito,…} – gleiche Spezifität, und das
+   Extension-CSS lädt VOR Stock → ohne !important bliebe Carlito.
+   Kursive Schnitte sind bewusst nicht eingebettet (die UI nutzt so gut
+   wie keine; der Browser stellt Plex notfalls selbst schräg). */
+body {
+    font-family: 'IBM Plex Sans', Carlito, 'Segoe UI', Helvetica, Arial, sans-serif !important;
 }
 
 /* ---------- Login-Screen (Design-Screen 08: weiße Karte auf Navy) ---------- */
@@ -307,6 +363,41 @@ h3.header,
     filter: brightness(0) invert(1);
 }
 
+/* ---------- App-Bar-Navigation (Keeper: Links neben dem Profil) ----------
+   Kommt als HTML-Patch der Extension (html/kevin-nav.html) VOR jedes
+   guac-user-menu. Die .header ist bei Stock display:flex mit
+   align-items:stretch – margin-left:auto schiebt die Leiste an die
+   rechte Kante, direkt vor das Benutzer-Menü. */
+.kevin-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+    padding: 0 6px;
+}
+
+.kevin-nav .kevin-nav-link {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    text-transform: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+.kevin-nav .kevin-nav-link:hover {
+    color: var(--kb-accent);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+/* Im schmalen Sitzungsmenü (Client) hat die Navy-Kopfzeile keinen
+   Platz für die Nav – dort übernimmt weiterhin das Benutzer-Menü */
+#guac-menu .kevin-nav {
+    display: none;
+}
+
 /* Aufgeklapptes Menü als weiße Kevin-Karte */
 .user-menu .menu-contents {
     background: var(--kb-bg) !important;
@@ -354,6 +445,15 @@ h3.header,
     border-top: 1px solid var(--kb-border);
 }
 
+/* Vollbild-Aktion im Sitzungsmenü: Stock-JS vergibt der Action wegen
+   eines Schreibfehlers (classname statt className) KEINE Klasse –
+   Zuordnung deshalb über die Listen-Position der ersten action-list
+   (Trennen, Vollbild). Ersetzt Stocks guac-monitor.svg durch das
+   eigene Eckklammern-Icon. */
+#guac-menu .user-menu .menu-contents ul.action-list > li:nth-child(2) > a {
+    background-image: url('app/ext/kevin-branding/images/menu-fullscreen.svg') !important;
+}
+
 /* Aktueller Ort („Einstellungen" in den Einstellungen): Stock markiert
    ihn mit a.current und macht ihn mit opacity .25 fast unsichtbar –
    lesbares Grau stattdessen. NUR page-list-Links; die Aktions-Links
@@ -377,13 +477,16 @@ h3.header,
 }
 
 /* Menü-Hover generisch (User-Menü UND Client-Menüs): Stock nutzt
-   Gelbgrün rgb(204,221,170) – auf Kevin-Auswahlblau drehen */
+   Gelbgrün rgb(204,221,170) – auf Kevin-Auswahlblau drehen.
+   NUR background-color: Das background-Shorthand würde die Zeilen-
+   Icons (background-image) beim Hover löschen – Abmelden/Vollbild
+   verloren so ihr Icon, sobald der Cursor darüber stand. */
 .menu-dropdown .menu-contents li a:hover {
-    background: var(--kb-row-selected) !important;
+    background-color: var(--kb-row-selected) !important;
 }
 
 .menu-dropdown .menu-contents li a.danger:hover {
-    background: var(--kb-danger) !important;
+    background-color: var(--kb-danger) !important;
     color: #ffffff !important;
 }
 
@@ -527,13 +630,39 @@ a.button.disabled {
     opacity: 1 !important;
 }
 
-/* Fokus-Ring in Primärblau */
+/* Fokus-Ring in Primärblau. textareas direkt im body sind Guacamoles
+   UNSICHTBARE Service-Elemente (Zwischenablage-Sync, Tastatur-Sink) –
+   die bekommen beim programmatischen Fokus KEINEN Ring (:where hält
+   die Spezifität der Gesamtregel unverändert). */
 input:focus,
 select:focus,
-textarea:focus,
+textarea:focus:not(:where(body > textarea)),
 button:focus {
     outline: 2px solid var(--kb-primary) !important;
     outline-offset: 1px;
+}
+
+/* Guacamoles versteckte Service-textareas (clipboardService hängt
+   .clipboard-service-target an den body und parkt sie 1em×1em bei
+   left:-1em; daneben liegt der 0×0-Tastatur-Sink). Die generische
+   Feld-Metrik (padding/border, s. Dateiende) machte das Clipboard-
+   Element 22px breit → 8px weißer Streifen ragte in den Viewport,
+   mit Resize-Griff zum versehentlichen Aufziehen (in RDP-Sitzungen
+   als weißer Kasten aufgefallen). Neutral + resize-los halten;
+   KEIN display:none/visibility:hidden – der Service braucht das
+   Element fokussier- und selektierbar für die Zwischenablage. */
+body > textarea {
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    resize: none !important;
+    pointer-events: none;
+}
+
+body > textarea.clipboard-service-target {
+    opacity: 0;
 }
 
 /* ---------- Tabellen (Verlauf, Benutzer, Sitzungen …) ---------- */
@@ -1290,12 +1419,62 @@ div.settings {
     background: var(--kb-row-selected);
 }
 
-.pager .icon {
-    opacity: .45;
+/* Pfeil-Buttons (erste/vorige/nächste/letzte Seite) als Kästchen wie
+   die Seitenzahlen; eigene Chevron-Masken in currentColor statt der
+   dunklen Stock-SVGs (background:#fff löscht deren background-image
+   gleich mit). Linke Varianten = gespiegelte rechte (scaleX). */
+.pager .icon.first-page,
+.pager .icon.prev-page,
+.pager .icon.next-page,
+.pager .icon.last-page {
+    /* Stock-Metrik: .icon ist 24px mit 16px-Grafik – auf die Kästchen-
+       Höhe der Seitenzahlen (30px) anheben */
+    width: 30px;
+    height: 30px;
+    background: #ffffff;
+    border: 1px solid var(--kb-border);
+    border-radius: 6px;
+    margin: 0 2px;
+    vertical-align: middle;
+    color: var(--kb-text-muted);
+    opacity: 1;
+}
+
+.pager .icon.first-page::before,
+.pager .icon.prev-page::before,
+.pager .icon.next-page::before,
+.pager .icon.last-page::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: currentColor;
+    -webkit-mask: var(--kb-pager-icon) center / 14px 14px no-repeat;
+    mask: var(--kb-pager-icon) center / 14px 14px no-repeat;
+}
+
+.pager .icon.next-page { --kb-pager-icon: url('app/ext/kevin-branding/images/pager-chevron.svg'); }
+.pager .icon.last-page { --kb-pager-icon: url('app/ext/kevin-branding/images/pager-chevron-double.svg'); }
+.pager .icon.prev-page { --kb-pager-icon: url('app/ext/kevin-branding/images/pager-chevron.svg'); }
+.pager .icon.first-page { --kb-pager-icon: url('app/ext/kevin-branding/images/pager-chevron-double.svg'); }
+
+/* Spiegelung NUR am ::before, nicht am Kästchen (sonst wandert der
+   1px-Rahmen bei Subpixel-Rundung) */
+.pager .icon.prev-page::before,
+.pager .icon.first-page::before {
+    transform: scaleX(-1);
+}
+
+.pager .icon.first-page:not(.disabled):hover,
+.pager .icon.prev-page:not(.disabled):hover,
+.pager .icon.next-page:not(.disabled):hover,
+.pager .icon.last-page:not(.disabled):hover {
+    background: var(--kb-row-selected);
+    color: var(--kb-text);
 }
 
 .pager .icon.disabled {
-    opacity: .18;
+    color: var(--kb-border);
 }
 
 /* ---------- Kleinigkeiten ---------- */
@@ -1310,6 +1489,9 @@ div.settings {
     background: var(--kb-row-selected) !important;
     border-color: var(--kb-primary) !important;
     color: var(--kb-primary) !important;
+    /* Stock setzt .2em auf gleicher Spezifität und lädt nach uns –
+       ohne !important fiele der current-Kasten auf ~3px zurück */
+    border-radius: 6px !important;
 }
 
 /* Client-Screens der Original-UI (Datei-Browser, Breadcrumbs, Zoom):
@@ -1445,6 +1627,73 @@ div.settings {
     background: var(--kb-backdrop) !important;
 }
 
+/* ---------- Sonderansichten der index-Ebene (M7.1) ----------
+   applicationState-Modals AUSSERHALB der login-ui: „Abgemeldet",
+   automaticLoginRejected (u. a. die Brute-Force-Sperre / HTTP 429,
+   LOGIN.ERROR_TOO_MANY_ATTEMPTS – deutsch via unserer de.json) und
+   der fatale Seitenfehler. Stock: nackte weiße Seite mit dunkelgrauem
+   .notification-Kasten → Kevin: Navy-Grund + weiße Karte wie der Login. */
+.logged-out-modal guac-modal,
+.automatic-login-rejected-modal guac-modal,
+.fatal-page-error-modal guac-modal {
+    background: var(--kb-navy) !important;
+}
+
+.logged-out-modal .notification,
+.automatic-login-rejected-modal .notification,
+.fatal-page-error-modal .fatal-page-error {
+    /* Stocks .notification-Grundregel malt rgba(40,40,40,.75) + Weiß;
+       unsere eigene .notification-Regel setzt border/shadow mit
+       !important – hier ebenso, sonst verliert die Karte gegen sie */
+    background: #ffffff !important;
+    color: var(--kb-text) !important;
+    border: none !important;
+    border-radius: 10px;
+    box-shadow: var(--kb-shadow-login-card) !important;
+    padding: 30px 34px 26px;
+    max-width: 420px !important;
+    text-align: center;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+/* K-Kachel über dem Text – dieselbe Marke wie auf der Login-Karte */
+.logged-out-modal .notification::before,
+.automatic-login-rejected-modal .notification::before,
+.fatal-page-error-modal .fatal-page-error::before {
+    content: "";
+    display: block;
+    width: 44px;
+    height: 44px;
+    margin: 0 auto 14px;
+    background: url('app/ext/kevin-branding/images/kevin-logo.svg') center/contain no-repeat;
+}
+
+/* Fataler Seitenfehler: Titelzeile ohne VERSAL; Stocks warning.svg-
+   ::before am h1 entfällt zugunsten der K-Kachel der Karte */
+.fatal-page-error h1 {
+    text-transform: none !important;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 0 0 6px;
+    text-align: center;
+}
+
+.fatal-page-error h1::before {
+    display: none !important;
+}
+
+.fatal-page-error p {
+    color: var(--kb-text-secondary);
+}
+
+/* „Erneut anmelden" mit etwas Luft über dem Button; Optik kommt aus
+   der globalen Button-Regel (Primärblau) */
+.logged-out-modal .notification p:has(button),
+.automatic-login-rejected-modal .notification p:has(button) {
+    margin: 18px 0 0;
+}
+
 /* ---------- Client-Session (Original-UI) ---------- */
 
 /* Menü (Strg+Alt+Shift): Stock-Grau → Weiß; die Navy-Kopfzeile kommt
@@ -1559,6 +1808,55 @@ div.settings {
 
 #guac-menu .device:hover {
     background-color: var(--kb-row-selected) !important;
+}
+
+/* ---------- Bildschirmtastatur (OSK, M7.1) ----------
+   Stock: Grau #222/#444, aktive Modifier Oliv (#882/#dd4), gedrückte
+   Tasten Rot (#822/#d44). Kevin: Navy-Panel mit gelber Markenkante,
+   Tasten in hellem Navy, Zustände Primary/Accent. Die Stock-Regeln
+   haben dieselbe Spezifität und laden nach uns → !important. */
+.keyboard-container {
+    background: var(--kb-navy) !important;
+    border-top: 2px solid var(--kb-accent) !important;
+    opacity: 1 !important;
+    padding: 6px 4px !important;
+}
+
+.guac-keyboard .guac-keyboard-key {
+    background: var(--kb-osk-key) !important;
+    border-color: var(--kb-osk-key-border) !important;
+    color: #ffffff !important;
+    font-weight: 400 !important;
+    text-shadow: none !important;
+}
+
+/* Taste unter dem Zeiger */
+.guac-keyboard .guac-keyboard-key.highlight {
+    background: var(--kb-primary) !important;
+    border-color: var(--kb-primary) !important;
+}
+
+/* Gedrückte Taste: dunkleres Blau mit gelbem Rand als Druck-Feedback */
+.guac-keyboard .guac-keyboard-key.guac-keyboard-pressed {
+    background: var(--kb-primary-hover) !important;
+    border-color: var(--kb-accent) !important;
+}
+
+/* Aktive Modifier (Shift/Caps/Strg/Alt/AltGr/Super): Marken-Gelb mit
+   Navy-Beschriftung – Selektorliste 1:1 aus dem Stock-CSS übernommen */
+.guac-keyboard.guac-keyboard-modifier-alt-gr .guac-keyboard-key-alt-gr,
+.guac-keyboard.guac-keyboard-modifier-alt .guac-keyboard-key-lalt,
+.guac-keyboard.guac-keyboard-modifier-alt .guac-keyboard-key-ralt,
+.guac-keyboard.guac-keyboard-modifier-caps .guac-keyboard-key-caps,
+.guac-keyboard.guac-keyboard-modifier-control .guac-keyboard-key-lctrl,
+.guac-keyboard.guac-keyboard-modifier-control .guac-keyboard-key-rctrl,
+.guac-keyboard.guac-keyboard-modifier-lat .guac-keyboard-key-latin,
+.guac-keyboard.guac-keyboard-modifier-shift .guac-keyboard-key-lshift,
+.guac-keyboard.guac-keyboard-modifier-shift .guac-keyboard-key-rshift,
+.guac-keyboard.guac-keyboard-modifier-super .guac-keyboard-key-super {
+    background: var(--kb-accent) !important;
+    border-color: var(--kb-accent) !important;
+    color: var(--kb-navy) !important;
 }
 
 /* ---------- Verbindungs-Dropdown im Sitzungsmenü ----------
@@ -1738,4 +2036,46 @@ textarea {
 
 select {
     padding: 6px 8px;
+}
+
+/* ---------- Recording-Player (M7.1, Vorgriff auf M8) ----------
+   Einstellungen → Verlauf → Aufzeichnung ansehen (connectionHistoryPlayer).
+   Nach Stock-Selektoren gestylt; echte Sichtprüfung erst möglich, sobald
+   Session-Recording (M8) Aufzeichnungen liefert. */
+
+/* Ladekreis beim Einlesen der Aufzeichnung: Stock-Hellblau #5af → Accent */
+guac-player-progress-indicator .guac-player-progress-bar,
+guac-player-progress-indicator .guac-player-progress-bar-container.past-halfway::before {
+    border-color: var(--kb-accent) transparent transparent var(--kb-accent) !important;
+}
+
+/* Steuerleiste unter dem Bild: halbtransparentes Navy statt Schwarz */
+.settings.connectionHistoryPlayer .guac-player-controls {
+    background: rgba(15, 30, 61, 0.92) !important;
+}
+
+/* Zeitleiste (input range) in Markenfarbe */
+.guac-player-controls .guac-player-seek {
+    accent-color: var(--kb-accent);
+}
+
+/* Play/Pause-Hover: gelber Schimmer statt Halbweiß */
+.guac-player-controls .guac-player-pause:hover,
+.guac-player-controls .guac-player-play:hover {
+    background: rgba(250, 204, 21, 0.25) !important;
+}
+
+/* „Aufzeichnung abspielen"-Button: Stock zeigt Weiß-auf-Schwarz mit
+   2px-Rahmen → Kevin-Primärbutton */
+.settings.connectionHistoryPlayer .guac-player-button {
+    background: var(--kb-primary) !important;
+    border: 1px solid var(--kb-primary) !important;
+    border-radius: 6px !important;
+    color: #ffffff !important;
+    font-weight: 500 !important;
+}
+
+.settings.connectionHistoryPlayer .guac-player-button:hover {
+    background: var(--kb-primary-hover) !important;
+    border-color: var(--kb-primary-hover) !important;
 }

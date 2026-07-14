@@ -2,6 +2,13 @@
     "APP" : {
         "NAME" : "Kevin Connection Manager"
     },
+    "KEVIN" : {
+        "NAV_CONNECTIONS" : "Meine Verbindungen",
+        "NAV_SETTINGS" : "Einstellungen"
+    },
+    "LOGIN" : {
+        "ERROR_TOO_MANY_ATTEMPTS" : "Zu viele fehlgeschlagene Anmeldeversuche. Bitte warten Sie einige Minuten und versuchen Sie es dann erneut."
+    },
     "CLIENT" : {
         "TEXT_CLIENT_STATUS_CONNECTING" : "Verbindungsaufbau zu Kevin Connection Manager...",
         "TEXT_CLIENT_STATUS_WAITING" : "Verbindungsaufbau zu Kevin Connection Manager. Bitte warten...",
