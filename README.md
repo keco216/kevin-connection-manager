@@ -42,9 +42,10 @@ Stack aus [`deploy/docker-compose.portainer.yml`](deploy/docker-compose.portaine
 anlegen und die Stack-Umgebungsvariable `POSTGRES_PASSWORD` setzen. Guacamole
 lauscht auf **Port 7070**; davor gehört ein Reverse-Proxy mit TLS und
 WebSocket-Unterstützung. Das Image enthält die Extension bereits; der Stack
-folgt dem `latest`-Tag und aktualisiert sich über den mitgelieferten,
-auf diesen einen Container begrenzten Watchtower-Dienst jede Nacht von
-selbst. Zum Festnageln einer Version stattdessen ein `vX.Y.Z`-Tag aus den
+folgt dem `latest`-Tag, und der Guacamole-Dienst trägt das
+Watchtower-Freigabe-Label – ein vorhandener Watchtower im Label-Modus
+hält ihn damit automatisch aktuell. Zum Festnageln einer Version
+stattdessen ein `vX.Y.Z`-Tag aus den
 [Releases](https://github.com/keco216/kevin-connection-manager/releases)
 eintragen.
 

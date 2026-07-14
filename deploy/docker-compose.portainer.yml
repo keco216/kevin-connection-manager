@@ -4,9 +4,9 @@
 # Guacamole auf Port 7070 (der NPM zeigt bereits dorthin und terminiert TLS).
 #
 # Das Guacamole-Image kommt von GHCR und enthält die Kevin-Branding-Extension
-# bereits; es läuft auf dem wandernden Tag "latest" und wird vom mitgelieferten
-# Watchtower-Service (Label-gescoped, nur dieser eine Container) jede Nacht um
-# 04:00 automatisch aktualisiert.
+# bereits; es läuft auf dem wandernden Tag "latest". Der Guacamole-Container
+# trägt das Watchtower-Freigabe-Label – ein auf dem Host laufender Watchtower
+# im Label-Modus (--label-enable) aktualisiert ihn automatisch.
 #
 # Vor dem Deploy in Portainer die Stack-Umgebungsvariable POSTGRES_PASSWORD setzen!
 services:
@@ -70,24 +70,10 @@ services:
       - "7070:8080"
     restart: unless-stopped
     labels:
-      # Einziger Container, den Watchtower aktualisieren darf
+      # Freigabe für den auf dem Host laufenden Watchtower (Label-Modus):
+      # nur dieser Container wird automatisch aktualisiert – guacd und
+      # PostgreSQL bewusst nicht
       - "com.centurylinklabs.watchtower.enable=true"
-
-  watchtower:
-    # Aktualisiert AUSSCHLIESSLICH Container mit dem enable-Label (oben nur
-    # guacamole – guacd/Postgres und fremde Stacks wie Passbolt/RustDesk
-    # bleiben unberührt). Update-Fenster: täglich 04:00 – Watchtower ersetzt
-    # den Container, laufende Sitzungen würden sonst tagsüber abbrechen.
-    # Läuft auf dem Host bereits ein eigener Watchtower, diesen Service
-    # weglassen und dort --label-enable verwenden.
-    image: containrrr/watchtower:1.7.1
-    container_name: guacamole_watchtower
-    command: --label-enable --cleanup --schedule "0 0 4 * * *"
-    environment:
-      TZ: Europe/Berlin
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: unless-stopped
 
 volumes:
   guac_db:
