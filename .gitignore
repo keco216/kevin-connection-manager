@@ -1,0 +1,25 @@
+# Umgebungsvariablen mit Zugangsdaten – niemals committen
+.env
+
+# Generiertes DB-Schema (wird per scripts/init-db.ps1 erzeugt)
+initdb/*.sql
+
+# Node-Artefakte und Screenshot-Ausgabe der Verifikations-Skripte
+node_modules/
+scripts/e2e-screenshots/
+
+# Inhalt des virtuellen Guacamole-Laufwerks (guacd-Volume /drive, M5.2)
+drive/
+
+# Lokale Design-Referenz und Backups (bewusst unversioniert)
+design-system/
+*.zip
+
+# Lokale Copy-Paste-Vorlage für den Portainer-Stack (kann das echte
+# DB-Passwort enthalten – niemals committen!)
+PORTAINER-STACK.txt
+
+# Logs & Betriebssystem-Reste
+*.log
+Thumbs.db
+.DS_Store

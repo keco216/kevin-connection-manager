@@ -1,0 +1,40 @@
+# Baut das Guacamole-Image mit eingebauter Branding-Extension und veröffentlicht
+# es als GitHub-Package (ghcr.io/keco216/kcm-guacamole). Läuft automatisch bei
+# Änderungen an Extension/Dockerfile auf main – oder manuell über "Run workflow".
+name: Guacamole-Image mit Branding
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - Dockerfile
+      - guacamole-home/**
+      - .github/workflows/build-image.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/keco216/kcm-guacamole:1.6.0
+            ghcr.io/keco216/kcm-guacamole:latest
+          labels: |
+            org.opencontainers.image.source=https://github.com/keco216/kevin-connection-manager
+            org.opencontainers.image.description=Apache Guacamole 1.6.0 mit Kevin-Branding-Extension (Keeper-Look)

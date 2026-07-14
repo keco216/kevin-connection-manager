@@ -1,0 +1,2 @@
+# Dieser Ordner wird von scripts/init-db.ps1 mit 01-schema.sql befüllt.
+# Die SQL-Datei selbst ist gitignored (generiertes Artefakt).

@@ -1,0 +1,1741 @@
+/* ============================================================
+   Kevin Connection Manager – Branding-Overrides (M7 v1)
+   Farbwelt: Navy #0F1E3D · Blau #1D4ED8 · Gelb #FACC15
+   Zweck: Die unter /guacamole/ erreichbare Original-UI als
+   konsistenter Admin-Fallback im Kevin-Anstrich.
+   Werte gespiegelt aus frontend/src/styles/tokens.css – die
+   Original-UI ist eine eigene Seite und kennt die Frontend-
+   Variablen nicht, deshalb hier ein eigener :root-Satz.
+   ============================================================ */
+
+:root {
+    --kb-primary: #1D4ED8;
+    --kb-primary-hover: #1E40AF;
+    --kb-navy: #0F1E3D;
+    --kb-accent: #FACC15;
+    --kb-bg: #FFFFFF;
+    --kb-text: #111827;
+    --kb-text-muted: #6B7280;
+    --kb-text-faint: #9CA3AF;
+    --kb-border-strong: #D1D5DB;
+    --kb-danger: #DC2626;
+    --kb-danger-surface: #FEF2F2;
+    --kb-focus-ring: rgba(29, 78, 216, 0.15);
+    --kb-row-selected: #F3F7FF;
+    --kb-row-hover: #F9FAFB;
+    --kb-surface: #F3F4F6;
+    --kb-text-secondary: #4B5563;
+    --kb-border: #E5E7EB;
+    --kb-table-divider: #F1F2F4;
+    --kb-navy-text-muted: #8DA0C4;
+    --kb-warning-bg: #FEF9E7;
+    --kb-warning-border: #F2E28C;
+    --kb-warning-text: #854D0E;
+    --kb-backdrop: rgba(15, 30, 61, 0.45);
+    --kb-shadow-login-card: 0 24px 70px rgba(4, 10, 24, 0.5);
+    --kb-shadow-menu: 0 10px 30px rgba(15, 30, 61, 0.16);
+    --kb-shadow-card: 0 1px 3px rgba(15, 30, 61, 0.05), 0 10px 30px rgba(15, 30, 61, 0.07);
+}
+
+/* ---------- Login-Screen (Design-Screen 08: weiße Karte auf Navy) ---------- */
+
+.login-ui {
+    background: var(--kb-navy) !important;
+}
+
+.login-ui .login-dialog {
+    background: var(--kb-bg) !important;
+    border: none !important;
+    border-radius: 10px;
+    box-shadow: var(--kb-shadow-login-card);
+    color: var(--kb-text);
+}
+
+/* Guacamole-Logo durch die K-Kachel ersetzen. Pfad relativ zur
+   Dokument-Basis /guacamole/ – das Extension-CSS wird eingebettet,
+   url() löst deshalb NICHT relativ zur .jar-Struktur auf. */
+.login-ui .login-dialog .logo {
+    background-image: url('app/ext/kevin-branding/images/kevin-logo.svg') !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+}
+
+/* App-Name + Version im Dialog */
+.login-ui .login-dialog .app-name {
+    color: var(--kb-text) !important;
+}
+
+/* Versions-Badge (absolut positioniert, landet unten rechts auf Navy);
+   Stock färbt es grün – auf dezentes Navy-Grau drehen */
+.login-ui .login-dialog .version-number {
+    background: transparent !important;
+    color: var(--kb-navy-text-muted) !important;
+}
+
+/* Eingabefelder wie .login-input des Frontends */
+.login-ui .login-fields input[type="text"],
+.login-ui .login-fields input[type="password"] {
+    background: var(--kb-bg) !important;
+    color: var(--kb-text) !important;
+    border: 1px solid var(--kb-border-strong) !important;
+    border-radius: 6px !important;
+}
+
+.login-ui .login-fields input[type="text"]:focus,
+.login-ui .login-fields input[type="password"]:focus {
+    outline: none !important;
+    border-color: var(--kb-primary) !important;
+    box-shadow: 0 0 0 3px var(--kb-focus-ring) !important;
+}
+
+.login-ui .login-fields input::placeholder {
+    color: var(--kb-text-faint);
+}
+
+/* Feld-Beschriftungen einblenden: Stock versteckt die .field-header des
+   Logins und setzt KEINE Platzhalter – ohne Labels sind die Felder stumm.
+   flex-column auf .labeled-field neutralisiert das Stock-Layout, das die
+   Header sonst links AUS der Karte schiebt; Optik wie .login-label. */
+.login-ui .login-fields .labeled-field {
+    display: flex !important;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.login-ui .login-fields .field-header {
+    display: block !important;
+    position: static !important;
+    float: none !important;
+    width: auto !important;
+    text-align: left;
+    font-size: 13px !important;
+    font-weight: 500;
+    color: var(--kb-text-secondary);
+    margin: 8px 0 4px;
+    padding: 0 !important;
+}
+
+/* Fehlermeldung (liegt außerhalb des Dialogs auf Navy);
+   :not(:empty), damit der leere Angular-Platzhalter keinen Kasten malt.
+   Stock setzt Hintergrund/Rahmen selbst mit !important → hier ebenso. */
+.login-ui .login-error:not(:empty) {
+    background: var(--kb-danger-surface) !important;
+    color: var(--kb-danger) !important;
+    border: none !important;
+    border-radius: 6px;
+    padding: 10px 12px;
+}
+
+/* ---------- Kopfleiste ---------- */
+
+/* Keeper-Prinzip: NUR die oberste Leiste jeder Seite ist die dunkle
+   App-Bar – alle weiteren .header (Abschnitte wie „Alle Verbindungen",
+   „Parameter", „Passwort ändern") werden dezente Text-Überschriften. */
+.header {
+    background: transparent !important;
+    /* !important nötig: Extension-CSS lädt VOR Stock – dessen
+       border-bottom (die graue Linie unter jedem .header) gewinnt sonst */
+    border-top: none !important;
+    border-bottom: none !important;
+    box-shadow: none !important;
+    color: var(--kb-text);
+}
+
+.header h1,
+.header h2,
+.header h3,
+.header h4 {
+    color: var(--kb-text) !important;
+    text-transform: none;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* Auch eigenständige Header-Headings (h2.header „Parameter") und die
+   Formular-Abschnittstitel normal schreiben statt VERSAL (Keeper-Stil);
+   !important, weil Stock die Attribut-Abschnitte spezifischer versaliert */
+h2.header,
+h3.header,
+.form-header {
+    text-transform: none !important;
+    font-size: 17px;
+}
+
+/* App-Bar: erste Leiste der View (Home, Settings, manage, Import)
+   und die Kopfzeile des Client-Menüs – Navy mit gelber Kante */
+.view > .header:first-child,
+.connection-list-ui > .header:first-child,
+#guac-menu .header {
+    background: var(--kb-navy) !important;
+    /* !important, damit die Grundregel (border-bottom:none !important)
+       die gelbe Kante der App-Bar nicht mit auslöscht */
+    border-bottom: 2px solid var(--kb-accent) !important;
+    color: #FFFFFF;
+}
+
+.view > .header:first-child h1,
+.view > .header:first-child h2,
+.connection-list-ui > .header:first-child h2,
+#guac-menu .header h2 {
+    color: #FFFFFF !important;
+    text-transform: uppercase;
+    font-size: 1.25em;
+    font-weight: 700;
+}
+
+/* K-Logo links in der App-Bar (wie das Keeper-Logo) */
+.view > .header:first-child > h2::before,
+.connection-list-ui > .header:first-child > h2::before {
+    content: "";
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    margin-right: 10px;
+    vertical-align: -5px;
+    background: url('app/ext/kevin-branding/images/kevin-logo.svg') center/contain no-repeat;
+}
+
+/* Home-App-Bar wie Keeper: links steht die MARKE, nicht der Sektions-
+   titel „Letzte Verbindungen" (der wandert per ::before über die
+   Karten, s. u.). Settings/manage behalten ihren Seitentitel in der
+   Bar – dort gibt es im Stock-DOM keinen Content-Titel als Ersatz. */
+.connection-list-ui > .header:first-child > h2 {
+    font-size: 0;
+    /* Stock-Padding ist em-basiert und kollabiert bei font-size 0 –
+       feste Höhe hält die Bar auf dem Maß der übrigen Seiten */
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.connection-list-ui > .header:first-child > h2::before {
+    vertical-align: middle;
+}
+
+.connection-list-ui > .header:first-child > h2::after {
+    content: "Kevin Connection Manager";
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #FFFFFF;
+}
+
+/* Formular-Abschnitte der manage-Seiten („Netzwerk", „Authentifizierung" …):
+   Stock malt graue Vollbalken (rgba(0,0,0,0.04)) – Keeper zeigt reine
+   fette Titel ganz ohne Linien/Kästen; padding-left weg, damit der
+   Titel bündig mit den Feldern steht (Stock rückt .5em ein) */
+.form-header {
+    background: transparent !important;
+    color: var(--kb-text) !important;
+    border: none !important;
+    box-shadow: none !important;
+    font-weight: 600;
+    /* Stock: padding .5em rundum + margin 1em – zusammen mit den
+       Segment-Paddings entstanden Keeper-untypische Riesenlücken */
+    padding: 0 !important;
+    margin: 10px 0 12px !important;
+}
+
+/* Settings-Tabs: liegen NICHT im .header, sondern als Geschwister
+   darunter auf Weiß (.page-tabs > .page-list > ul > li > a, aktiver
+   Tab trägt .current). Optik wie .settings-tab des Frontends:
+   muted, aktiv Primärblau mit 2px-Unterstreichung statt grauem Block.
+   Keeper zieht unter der ganzen Tab-Zeile eine feine Linie. */
+.page-tabs {
+    border-bottom: 1px solid var(--kb-border);
+}
+.page-tabs .page-list a,
+.section-tabs li a {
+    background: transparent !important;
+    color: var(--kb-text-muted) !important;
+    font-weight: 500;
+}
+
+.page-tabs .page-list a:hover,
+.section-tabs li a:hover {
+    background: var(--kb-row-selected) !important;
+    color: var(--kb-text) !important;
+}
+
+.page-tabs .page-list a.current,
+.section-tabs li a.current {
+    background: transparent !important;
+    color: var(--kb-primary) !important;
+    box-shadow: inset 0 -2px 0 var(--kb-primary) !important;
+    font-weight: 600;
+}
+
+/* Tab-Icons wie bei Keeper: über die stabilen href-Ziele selektiert,
+   als mask in currentColor – färben sich mit dem Tab-Zustand mit */
+.page-tabs .page-list a[href$="/sessions"]::before,
+.page-tabs .page-list a[href$="/history"]::before,
+.page-tabs .page-list a[href="#/settings/users"]::before,
+.page-tabs .page-list a[href="#/settings/userGroups"]::before,
+.page-tabs .page-list a[href$="/connections"]::before,
+.page-tabs .page-list a[href="#/settings/preferences"]::before {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    vertical-align: -3px;
+    background: currentColor;
+    -webkit-mask: var(--kb-tab-icon) center / contain no-repeat;
+    mask: var(--kb-tab-icon) center / contain no-repeat;
+}
+
+.page-tabs .page-list a[href$="/sessions"] { --kb-tab-icon: url('app/ext/kevin-branding/images/tab-sessions.svg'); }
+.page-tabs .page-list a[href$="/history"] { --kb-tab-icon: url('app/ext/kevin-branding/images/tab-history.svg'); }
+.page-tabs .page-list a[href="#/settings/users"] { --kb-tab-icon: url('app/ext/kevin-branding/images/tab-user.svg'); }
+.page-tabs .page-list a[href="#/settings/userGroups"] { --kb-tab-icon: url('app/ext/kevin-branding/images/tab-groups.svg'); }
+.page-tabs .page-list a[href$="/connections"] { --kb-tab-icon: url('app/ext/kevin-branding/images/tab-connections.svg'); }
+.page-tabs .page-list a[href="#/settings/preferences"] { --kb-tab-icon: url('app/ext/kevin-branding/images/tab-prefs.svg'); }
+
+/* Benutzermenü: Stock-Icon (background-image) und Text sind dunkel,
+   auf Navy unsichtbar – filter erfasst das Element samt Hintergrund-
+   bild und dreht beides auf Weiß. Nur in der Navy-App-Bar, sonst
+   würde ein Menü auf hellen Leisten weiß-auf-weiß verschwinden. */
+.view > .header:first-child .menu-dropdown .menu-title,
+.view > .header:first-child .menu-dropdown .menu-indicator,
+.connection-list-ui > .header:first-child .menu-dropdown .menu-title,
+.connection-list-ui > .header:first-child .menu-dropdown .menu-indicator,
+#guac-menu .header .menu-dropdown .menu-title,
+#guac-menu .header .menu-dropdown .menu-indicator {
+    filter: brightness(0) invert(1);
+}
+
+/* Aufgeklapptes Menü als weiße Kevin-Karte */
+.user-menu .menu-contents {
+    background: var(--kb-bg) !important;
+    box-shadow: var(--kb-shadow-menu) !important;
+    border: none !important;
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+    min-width: 210px;
+}
+
+/* Menüzeilen einheitlich: gleiches Padding, Icon (Stock-background-
+   image) 16px groß, links mittig – Stock streut Position und Größe.
+   page-list NUR über die direkte Kind-Kette der obersten Ebene –
+   die verschachtelten Unterseiten-Ebenen dürfen die Icon-/Padding-
+   Regeln NICHT erben (sonst kachelt das Zahnrad über die Zeile). */
+.user-menu .menu-contents li a,
+.user-menu .menu-contents .page-list > ul.page-list-level > li > a {
+    padding: 10px 18px 10px 42px !important;
+    background-position: 16px center !important;
+    background-size: 16px 16px !important;
+    background-repeat: no-repeat !important;
+    font-size: 14px;
+    color: var(--kb-text) !important;
+}
+
+/* Unterebenen der page-list im Benutzer-Menü verbergen – das
+   Original-Menü zeigt nur Startseite/Einstellungen/Abmelden */
+.user-menu .menu-contents .page-list ul.page-list-level ul.page-list-level {
+    display: none !important;
+}
+
+/* Eigene Menü-Icons statt der Stock-Bilder. Zuordnung über die
+   li-Position (Startseite ist immer der erste Eintrag): settings
+   zuerst, home danach – so behält ein einzelnes li das Haus. */
+.user-menu .menu-contents .page-list > ul.page-list-level > li:last-child > a {
+    background-image: url('app/ext/kevin-branding/images/menu-settings.svg') !important;
+}
+
+.user-menu .menu-contents .page-list > ul.page-list-level > li:first-child > a {
+    background-image: url('app/ext/kevin-branding/images/menu-home.svg') !important;
+}
+
+.user-menu .menu-contents li a.logout {
+    background-image: url('app/ext/kevin-branding/images/menu-logout.svg') !important;
+    border-top: 1px solid var(--kb-border);
+}
+
+/* Aktueller Ort („Einstellungen" in den Einstellungen): Stock markiert
+   ihn mit a.current und macht ihn mit opacity .25 fast unsichtbar –
+   lesbares Grau stattdessen. NUR page-list-Links; die Aktions-Links
+   (Abmelden/Trennen) haben nie ein href und bleiben voll sichtbar. */
+.user-menu .menu-contents .page-list li a:not([href]),
+.user-menu .menu-contents li a.current {
+    color: var(--kb-text-faint) !important;
+    opacity: .55 !important;
+    cursor: default;
+}
+
+.user-menu .menu-contents .page-list li a:not([href]):hover,
+.user-menu .menu-contents li a.current:hover {
+    background: transparent !important;
+}
+
+/* Leere Aktionslisten (z. B. Trennen/Vollbild außerhalb der Sitzung)
+   einklappen, damit keine Geister-Ränder entstehen */
+.menu-dropdown .menu-contents ul.action-list:not(:has(li)) {
+    display: none;
+}
+
+/* Menü-Hover generisch (User-Menü UND Client-Menüs): Stock nutzt
+   Gelbgrün rgb(204,221,170) – auf Kevin-Auswahlblau drehen */
+.menu-dropdown .menu-contents li a:hover {
+    background: var(--kb-row-selected) !important;
+}
+
+.menu-dropdown .menu-contents li a.danger:hover {
+    background: var(--kb-danger) !important;
+    color: #ffffff !important;
+}
+
+/* Filterfelder überall im Keeper-Stil: graues Rounded-Feld, das beim
+   Fokus weiß wird; nur background-color setzen, damit das Lupen-Icon
+   (background-image des Inputs) erhalten bleibt */
+.filter input {
+    background-color: var(--kb-surface) !important;
+    color: var(--kb-text) !important;
+    border: 1px solid transparent !important;
+    border-radius: 8px !important;
+}
+
+.filter input:focus {
+    background-color: #ffffff !important;
+    border-color: var(--kb-primary) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px var(--kb-focus-ring) !important;
+}
+
+/* ---------- Interaktionsfarben ---------- */
+
+a {
+    color: var(--kb-primary);
+}
+
+button,
+input[type="submit"],
+a.button,
+.button {
+    background: var(--kb-primary) !important;
+    background-image: none !important;
+    border: 1px solid var(--kb-primary) !important;
+    color: #ffffff !important;
+    border-radius: 6px;
+    text-shadow: none !important;
+    box-shadow: none !important;
+    padding: 7px 14px;
+    font-weight: 500;
+    /* Buttons erben die Seitenschrift nicht von selbst – ohne feste
+       Größe wirken sie unterschiedlich groß neben 14px-Feldern */
+    font-size: 14px;
+    font-family: inherit;
+    line-height: 1.3;
+}
+
+/* Toolbar-Buttons („Neue Verbindung", „Neuer Benutzer", „Import"):
+   Stock verkleinert sie auf .8em – Keeper zeigt sie in voller Größe;
+   Icon (Stock-::before, weißes Bild) vertikal mittig zum neuen Padding */
+a.button.add-connection,
+a.button.add-connection-group,
+a.button.add-user,
+a.button.add-user-group,
+a.button.import-connections {
+    font-size: .9em;
+    padding: 8px 14px 8px 2.2em;
+}
+
+a.button.add-connection::before,
+a.button.add-connection-group::before,
+a.button.add-user::before,
+a.button.add-user-group::before,
+a.button.import-connections::before {
+    background-position: .7em center !important;
+}
+
+button:hover,
+input[type="submit"]:hover,
+a.button:hover,
+.button:hover {
+    background: var(--kb-primary-hover) !important;
+    border-color: var(--kb-primary-hover) !important;
+}
+
+/* Sekundär-Aktionen (Abbruch/Kopieren/Zurück) wie bei Keeper: helle
+   Graufläche ohne Rahmen neben dem Accent-„Speichern" */
+button.cancel,
+button.clone,
+button.back {
+    background: #ECEFF3 !important;
+    color: var(--kb-text) !important;
+    border: 1px solid #ECEFF3 !important;
+}
+
+button.cancel:hover,
+button.clone:hover,
+button.back:hover {
+    background: #E1E6EC !important;
+    border-color: #E1E6EC !important;
+}
+
+/* „Zurück"-Buttons tragen ein weißes Stock-::before-Icon – auf der
+   hellen Sekundärfläche unsichtbar, daher dunkel filtern */
+button.back::before,
+a.button.back::before {
+    filter: brightness(0);
+    opacity: .7;
+}
+
+/* Formular-CTA wie Keeper: „Speichern"/„Importieren" in der Markenfarbe
+   (Accent-Gelb, dunkler Text) – Listen-Aktionen („Neue Verbindung",
+   „Suche", „Download") bleiben bewusst Primärblau (so auch Keeper) */
+button.save,
+button.import {
+    background: var(--kb-accent) !important;
+    border-color: var(--kb-accent) !important;
+    color: var(--kb-navy) !important;
+    font-weight: 600;
+}
+
+button.save:hover,
+button.import:hover {
+    background: #EAB308 !important;
+    border-color: #EAB308 !important;
+}
+
+/* Gefährliche Aktionen wie Keeper: Outline-Rot (weißer Grund, roter
+   Rahmen und Text) statt roter Vollfläche; Vollrot erst beim Hover */
+button.danger,
+.button.danger {
+    background: #ffffff !important;
+    border-color: var(--kb-danger) !important;
+    color: var(--kb-danger) !important;
+}
+
+button.danger:hover,
+.button.danger:hover {
+    background: var(--kb-danger) !important;
+    border-color: var(--kb-danger) !important;
+    color: #ffffff !important;
+}
+
+/* Inaktive Buttons neutral grau statt „hellrot/hellblau" (Keeper wirkt
+   aufgeräumter, weil disabled-Aktionen zurücktreten) */
+button:disabled,
+input[type="submit"]:disabled,
+a.button.disabled {
+    background: var(--kb-border) !important;
+    border-color: var(--kb-border) !important;
+    color: var(--kb-text-faint) !important;
+    opacity: 1 !important;
+}
+
+/* Fokus-Ring in Primärblau */
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: 2px solid var(--kb-primary) !important;
+    outline-offset: 1px;
+}
+
+/* ---------- Tabellen (Verlauf, Benutzer, Sitzungen …) ---------- */
+
+/* Stock: grauer Kopfbalken + #aaa-Gitter → helle Kevin-Tabelle.
+   text-align nötig: Stock setzt keins, th zentrieren per Browser-
+   Default – die Spaltentitel standen nicht über den Zellwerten */
+table.sorted th {
+    background: var(--kb-surface) !important;
+    color: var(--kb-text-secondary) !important;
+    border: 1px solid var(--kb-border) !important;
+    border-left: none !important;
+    border-right: none !important;
+    font-weight: 600;
+    text-align: left;
+}
+
+/* Nur horizontale Trennlinien – Keeper-Tabellen haben kein Zellgitter */
+table.sorted td {
+    border: 1px solid var(--kb-table-divider) !important;
+    border-left: none !important;
+    border-right: none !important;
+}
+
+.settings table.sorted tbody tr:hover {
+    background: var(--kb-row-hover);
+}
+
+/* Sitzungs-Liste: Stock-Zeilen-Hover ist Gelbgrün */
+.settings table.session-list tr.session:hover {
+    background: var(--kb-row-selected) !important;
+}
+
+/* ---------- Baum & Listen (Home + Verwaltung) ---------- */
+
+/* Hover auf Baum-Einträgen: kräftige Vollzeile in Primary mit weißem
+   Text und weißen Icons (Keeper-Stil) */
+.list-item:not(.selected) .caption:hover {
+    background: var(--kb-primary) !important;
+    color: #ffffff;
+}
+
+.list-item:not(.selected) .caption:hover .name {
+    color: #ffffff !important;
+}
+
+.list-item:not(.selected) .caption:hover .usage {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.list-item:not(.selected) .caption:hover .icon {
+    filter: brightness(0) invert(1);
+}
+
+/* Gruppen-Icons auch auf der Startseite zeigen (Stock blendet sie dort
+   aus, Keeper zeigt sie – gibt dem Baum mehr Struktur) */
+.all-connections .connection-group > .caption .icon {
+    display: inline-block !important;
+}
+
+/* Recents-Kacheln („Letzte Verbindungen"): Stock = nacktes Thumbnail mit
+   schwarzem Rahmen, zentriert, Gelbgrün-Hover → Kevin-Karte wie
+   RecentConnections des Frontends, linksbündig */
+div.recent-connections {
+    text-align: center;
+    margin: 16px 24px;
+}
+
+/* Sektionstitel über den Karten (Keeper zeigt „Letzte Verbindungen"
+   als Content-Überschrift, nicht in der App-Bar) */
+div.recent-connections::before {
+    content: "Letzte Verbindungen";
+    display: block;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--kb-text);
+    margin: 4px 0 12px;
+}
+
+div.recent-connections div.connection {
+    background: #ffffff;
+    border: 1px solid var(--kb-border);
+    border-radius: 10px;
+    padding: 0 0 12px;
+    margin: 8px 16px 8px 0;
+    box-shadow: var(--kb-shadow-card);
+    color: var(--kb-text);
+    font-weight: 500;
+    overflow: hidden;
+}
+
+.recent-connections .connection:hover {
+    background: #ffffff !important;
+    box-shadow: var(--kb-shadow-menu);
+}
+
+/* Kopfbereich der Kachel: Thumbnail auf Surface-Grau (Keeper-Stil);
+   overflow schneidet den Hover-Schleier an den Kachelkanten */
+.recent-connections .connection .thumbnail {
+    background: var(--kb-surface);
+    margin: 0 0 10px !important;
+    padding: 14px 18px;
+    position: relative;
+    overflow: hidden;
+}
+
+.recent-connections .connection .thumbnail > * {
+    border: 1px solid var(--kb-border) !important;
+    background: #0B1730 !important;
+    box-shadow: none !important;
+    border-radius: 6px;
+}
+
+/* Hover exakt wie Keeper: grauer Schleier über dem GESAMTEN Thumbnail
+   plus blauer „Öffnen"-Button mit Icon in der Mitte */
+.recent-connections .connection:hover .thumbnail::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(148, 153, 163, 0.55);
+}
+
+/* Stocks „aus Letzte Verbindungen entfernen"-X oben rechts – Keeper
+   zeigt keins, es stört den ruhigen Karten-Look */
+.recent-connections .connection .remove-recent {
+    display: none !important;
+}
+
+.recent-connections .connection:hover .thumbnail::after {
+    content: "Öffnen";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--kb-primary) url('app/ext/kevin-branding/images/launch.svg') 12px center / 14px 14px no-repeat;
+    color: #ffffff;
+    padding: 7px 16px 7px 33px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 4px 14px rgba(15, 30, 61, 0.35);
+}
+
+/* Baum-Layout: mehr Luft statt Rand-Kleben, komfortable Zeilen,
+   deutlichere Einrückung, dezente Führungslinien */
+div.all-connections {
+    margin: 16px 24px;
+}
+
+/* Zeilendichte wie Keeper (~28px pro Baumzeile statt luftiger 36px) */
+.list-item .caption {
+    padding: 2px 10px;
+    border-radius: 6px;
+}
+
+.list-item .name {
+    color: var(--kb-text);
+    margin-left: 6px;
+}
+
+.list-item .usage {
+    font-style: normal;
+    color: var(--kb-text-muted);
+    font-size: 13px;
+}
+
+.expandable > .children {
+    margin-left: 14px;
+    padding-left: 16px;
+}
+
+/* Keeper zeigt KEINE Führungslinien im Baum – nur Einrückung + Icons.
+   Die Stock-::before/::after-Linien komplett entfernen. */
+.expandable.expanded > .children > .list-item::before,
+.expandable.expanded > .children > .list-item::after {
+    display: none !important;
+}
+
+/* Expander: Stock-⊞/⊟-Kästchen → Chevrons (eigene Extension-Ressourcen) */
+.expandable > .caption .icon.expand {
+    background-image: url('app/ext/kevin-branding/images/chevron-right.svg') !important;
+}
+
+.expandable.expanded > .caption .icon.expand,
+.expandable.empty > .caption .icon.expand {
+    background-image: url('app/ext/kevin-branding/images/chevron-down.svg') !important;
+}
+
+/* Baum-Icons im Keeper-Stil: Gruppen kräftig in Primärblau, Verbindungen
+   als ruhige Outline-Icons – ersetzt Stocks dunkle Ordner/Stecker.
+   :not(.expand) schützt die Chevron-Expander, :not(.add) die
+   Aktions-Icons der Toolbar-Buttons. Die Protokoll-Varianten stehen
+   NACH der generischen Verbindungs-Regel (gleiche Spezifität). */
+.connection-group > .caption .icon:not(.expand) {
+    background-image: url('app/ext/kevin-branding/images/tree-folder.svg') !important;
+}
+
+.connection-group.expanded > .caption .icon:not(.expand) {
+    background-image: url('app/ext/kevin-branding/images/tree-folder-open.svg') !important;
+}
+
+.connection > .caption .icon:not(.expand) {
+    background-image: url('app/ext/kevin-branding/images/tree-plug.svg') !important;
+}
+
+.connection > .caption .icon.rdp,
+.connection > .caption .icon.vnc {
+    background-image: url('app/ext/kevin-branding/images/tree-monitor.svg') !important;
+}
+
+.connection > .caption .icon.ssh,
+.connection > .caption .icon.telnet,
+.connection > .caption .icon.kubernetes {
+    background-image: url('app/ext/kevin-branding/images/tree-terminal.svg') !important;
+}
+
+.icon.user:not(.add) {
+    background-image: url('app/ext/kevin-branding/images/tree-user.svg') !important;
+}
+
+.icon.user-group:not(.add) {
+    background-image: url('app/ext/kevin-branding/images/tree-user-group.svg') !important;
+}
+
+/* Ordner im Datei-Browser (Shared Drive) im selben Blau; der
+   „.."-Hoch-Ordner (.previous) behält sein Stock-Pfeilbild */
+.file-browser .directory:not(.previous) > .caption .icon {
+    background-image: url('app/ext/kevin-branding/images/tree-folder.svg') !important;
+}
+
+/* Checkboxen in Berechtigungsbäumen (manage-user) nicht kleben lassen */
+.list-item .caption input[type="checkbox"] {
+    margin: 0 6px 0 2px;
+}
+
+/* Verbindungs-Expander (Sharing-Profile) im Settings-Baum: Keeper
+   zeigt ein blasses ˅ vor dem Monitor-Icon */
+.settings .connection.expandable > .caption .icon.expand {
+    background-image: url('app/ext/kevin-branding/images/chevron-down.svg') !important;
+    opacity: 0.35;
+}
+
+/* Root-Zeilen des Settings-Baums mit feinen Trennern – passend zur
+   Tabellen-Kopfzeile (Keeper-Look) */
+.settings .connection-list .group-list-page > .list-item {
+    border-bottom: 1px solid var(--kb-table-divider);
+    padding: 2px 0;
+}
+
+/* Kopfzeile über dem Settings-Verbindungsbaum (Keeper zeigt dort einen
+   Tabellenkopf); deutscher Text fest – die UI ist durchgängig deutsch */
+.settings.connections .connection-list::before {
+    content: "Verbindungs- oder Gruppenname";
+    display: block;
+    background: var(--kb-surface);
+    color: var(--kb-text-secondary);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+}
+
+/* Leer-Zustände: Stock nutzt teils rgba(255,255,255,0.5) – auf weißem
+   Grund unsichtbar; außerdem riesig. Keeper: normal groß, ruhig grau. */
+p.placeholder {
+    color: var(--kb-text-muted) !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+    /* Stock halbiert die Deckkraft und legt einen Text-Schatten drauf */
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+
+/* Seitenluft der Settings-Bereiche wie auf der Startseite */
+div.settings {
+    margin: 16px 24px;
+}
+
+/* Werkzeugzeile der Settings-Listen: Filter links (dehnt sich),
+   Aktions-Buttons rechts – wie bei Keeper */
+.settings .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.settings .toolbar .filter {
+    flex: 0 1 320px;
+    margin-right: auto;
+    order: -1;
+}
+
+/* Filter der Listen-Seiten außerhalb der Toolbar (Sitzungen/Verlauf):
+   ebenfalls auf Keeper-Breite begrenzen */
+.settings > .filter,
+.settings .filter:not(.group-list-filter) {
+    max-width: 320px;
+}
+
+/* Sitzungs-Seite: Beschreibung, dann EINE Zeile aus Filter (links) und
+   „Beende Sitzung" (rechts) – statt zentriert schwebendem Stock-Button.
+   Grid, weil action-buttons im DOM VOR dem Filter steht. */
+.settings.section.sessions {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    column-gap: 8px;
+}
+
+.settings.section.sessions > * {
+    grid-column: 1 / -1;
+}
+
+.settings.section.sessions > .filter {
+    grid-column: 1;
+    grid-row: 2;
+    margin: 8px 0;
+}
+
+.settings.section.sessions > .action-buttons {
+    grid-column: 2;
+    grid-row: 2;
+    margin: 0;
+    text-align: right;
+}
+
+/* Präferenzen: Sprache/Zeitzone wie Keeper als KOMPAKTE Zeile (Label
+   links, schmales Feld) statt seitenbreiter Selects – die Seite hat
+   keine 560px-Karte, Vollbreite wirkt dort verloren */
+.preferences .section.locale .form .fields > .labeled-field {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 12px;
+}
+
+.preferences .section.locale .form .fields > .labeled-field .field-header {
+    padding: 0;
+    flex: 0 0 auto;
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+}
+
+.preferences .section.locale .form .fields > .labeled-field .form-field select {
+    width: auto;
+    min-width: 220px;
+}
+
+/* Zeitzone: Region- und Ort-Select nebeneinander (Keeper) */
+.preferences .section.locale .time-zone-field {
+    display: flex;
+    gap: 8px;
+}
+
+/* Keeper-Icons vor den Locale-Zeilen: Globus (Sprache), Uhr (Zeitzone) */
+.preferences .section.locale .fields > .labeled-field:nth-of-type(1) .field-header::before,
+.preferences .section.locale .fields > .labeled-field:nth-of-type(2) .field-header::before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+    background: var(--kb-text-secondary);
+    -webkit-mask: var(--kb-field-icon) center / contain no-repeat;
+    mask: var(--kb-field-icon) center / contain no-repeat;
+}
+
+.preferences .section.locale .fields > .labeled-field:nth-of-type(1) .field-header { --kb-field-icon: url('app/ext/kevin-branding/images/field-globe.svg'); }
+.preferences .section.locale .fields > .labeled-field:nth-of-type(2) .field-header { --kb-field-icon: url('app/ext/kevin-branding/images/tab-history.svg'); }
+
+/* Leertext der Tabellen („Keine aktiven Sitzungen") wie Keeper: ruhiges
+   Dunkelgrau, als Tabellenzeile mit Trennlinie darunter */
+.settings p.placeholder {
+    color: var(--kb-text-secondary) !important;
+    margin: 0;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--kb-table-divider);
+}
+
+/* Home „Alle Verbindungen": Filter als eigene volle Zeile unter dem
+   Titel (Keeper) statt schmalem Feld rechts in der Leiste; auf dieselbe
+   24px-Fluchtlinie wie „Letzte Verbindungen" und den Baum gebracht */
+.connection-list-ui > .header:not(:first-child) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.connection-list-ui > .header:not(:first-child) > h2 {
+    padding: 0;
+}
+
+.connection-list-ui > .header:not(:first-child) .group-list-filter {
+    flex: 1 1 100%;
+    order: 10;
+    margin: 10px 0 4px;
+    max-width: none;
+    /* Stock gibt Header-Filtern .5em Eigen-Padding – bricht die Flucht */
+    padding: 0;
+}
+
+.connection-list-ui .group-list-filter input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* manage-Formulare (Verbindung/Gruppe/Benutzer/Profil): zentrierter
+   Karten-Stapel auf grauem Grund unter der vollbreiten App-Bar –
+   Keeper zeigt das Formular als weiße Karte */
+.manage-connection.view,
+.manage-connection-group.view,
+.manage-user.view,
+.manage-user-group.view,
+.manage-sharing-profile.view {
+    background: #F4F6FA;
+    min-height: 100%;
+    padding-bottom: 40px;
+}
+
+/* Alle Content-Kinder verschmelzen zu EINER durchgehenden Karte
+   (Keeper): Segmente ohne Zwischenabstand, Rahmen nur links/rechts,
+   Kopf-/Fußsegment tragen Radius und Ober-/Unterkante */
+.manage-connection.view > *:not(:first-child),
+.manage-connection-group.view > *:not(:first-child),
+.manage-user.view > *:not(:first-child),
+.manage-user-group.view > *:not(:first-child),
+.manage-sharing-profile.view > *:not(:first-child) {
+    max-width: 560px;
+    margin: 0 auto !important;
+    background: #ffffff;
+    border-left: 1px solid #E9ECF1;
+    border-right: 1px solid #E9ECF1;
+    border-top: none;
+    border-bottom: none;
+    border-radius: 0;
+    padding: 10px 40px;
+    /* seitlicher Kartenschatten (Keeper): pro Segment identisch, wirkt
+       über die Segmentgrenzen hinweg als EIN durchgehender Schatten.
+       blur == |spread| ⇒ kein vertikaler Überstand, sonst malt jedes
+       Segment eine Schattennaht über seinen Nachbarn */
+    box-shadow: 16px 0 12px -12px rgba(15, 30, 61, 0.14), -16px 0 12px -12px rgba(15, 30, 61, 0.14);
+}
+
+/* Kartenkopf (erstes Content-Kind nach der App-Bar) */
+.manage-connection.view > *:nth-child(2),
+.manage-connection-group.view > *:nth-child(2),
+.manage-sharing-profile.view > *:nth-child(2) {
+    border-top: 1px solid #E9ECF1;
+    border-radius: 10px 10px 0 0;
+    margin-top: 24px !important;
+    padding-top: 24px;
+    box-shadow: 16px 0 12px -12px rgba(15, 30, 61, 0.14), -16px 0 12px -12px rgba(15, 30, 61, 0.14), 0 -16px 12px -12px rgba(15, 30, 61, 0.14);
+}
+
+/* Kartenfuß */
+.manage-connection.view > *:last-child,
+.manage-connection-group.view > *:last-child,
+.manage-user.view > *:last-child,
+.manage-user-group.view > *:last-child,
+.manage-sharing-profile.view > *:last-child {
+    border-bottom: 1px solid #E9ECF1;
+    border-radius: 0 0 10px 10px;
+    padding-bottom: 24px;
+    box-shadow: 16px 0 12px -12px rgba(15, 30, 61, 0.14), -16px 0 12px -12px rgba(15, 30, 61, 0.14), 0 16px 12px -12px rgba(15, 30, 61, 0.14);
+}
+
+/* Benutzer/Gruppe: das gesamte Formular steckt in EINEM div – volle Karte */
+.manage-user.view > div:last-child,
+.manage-user-group.view > div:last-child {
+    border-top: 1px solid #E9ECF1;
+    border-radius: 10px;
+    margin-top: 16px !important;
+    padding-top: 20px;
+    box-shadow: 16px 0 12px -12px rgba(15, 30, 61, 0.14), -16px 0 12px -12px rgba(15, 30, 61, 0.14), 0 -16px 12px -12px rgba(15, 30, 61, 0.14), 0 16px 12px -12px rgba(15, 30, 61, 0.14);
+}
+
+/* Sektions-Überschriften (h2.header „Parameter"/„Verlauf") sind
+   Zwischentitel IN der Karte – weißes Segment (bg mit !important,
+   weil die .header-Grundregel sonst transparent erzwingt) */
+.manage-connection.view > h2.header,
+.manage-connection-group.view > h2.header,
+.manage-user.view > h2.header,
+.manage-user-group.view > h2.header,
+.manage-sharing-profile.view > h2.header {
+    background: #ffffff !important;
+    box-shadow: none !important;
+    padding-top: 18px;
+    padding-bottom: 4px;
+}
+
+/* Datasource-Tabs im manage: freistehend, mit Keeper-Linie unter der Zeile */
+.manage-user.view > .page-tabs,
+.manage-user-group.view > .page-tabs {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px solid var(--kb-border) !important;
+    border-radius: 0;
+    box-shadow: none !important;
+    padding: 12px 4px 0;
+}
+
+/* Textfelder in den manage-Karten großzügiger (Keeper: breite Felder) */
+.manage-connection.view input[type="text"],
+.manage-connection.view input[type="password"],
+.manage-connection-group.view input[type="text"],
+.manage-user.view input[type="text"],
+.manage-user.view input[type="password"],
+.manage-user-group.view input[type="text"],
+.manage-sharing-profile.view input[type="text"] {
+    min-width: 260px;
+}
+
+/* Kopf-Felder (Name/Standort/Protokoll bzw. Benutzername/Passwort):
+   Keeper stapelt Label ÜBER vollbreitem Feld – table.properties von
+   Tabellen- auf Block-Layout drehen */
+.view table.properties,
+.view table.properties tbody,
+.view table.properties tr,
+.view table.properties th,
+.view table.properties td {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+.view table.properties tr {
+    margin: 0 0 14px;
+}
+
+.view table.properties th {
+    padding: 0 0 4px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--kb-text-secondary);
+}
+
+.view table.properties td {
+    padding: 0;
+}
+
+.view table.properties input[type="text"],
+.view table.properties input[type="password"],
+.view table.properties select,
+.view table.properties .location-chooser input {
+    width: 100% !important;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Checkbox-Zeilen der properties-Tabellen (Login deaktiviert,
+   Berechtigungen): wie Keeper Label links, Häkchen rechtsbündig –
+   statt Checkbox einsam UNTER dem Label (Folge des Block-Layouts) */
+.view table.properties tr:has(input[type="checkbox"]) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 0 0 10px;
+}
+
+.view table.properties tr:has(input[type="checkbox"]) th {
+    padding: 0;
+    width: auto;
+    flex: 0 1 auto;
+}
+
+.view table.properties tr:has(input[type="checkbox"]) td {
+    width: auto;
+    flex: 0 0 auto;
+}
+
+/* Standort-Wähler: das Anzeige-Div ist KEIN input und blieb deshalb
+   schmal – als vollbreites Eingabefeld stylen (Keeper: breites Feld) */
+.view table.properties .location-chooser {
+    display: block !important;
+    width: 100% !important;
+}
+
+.view table.properties .location-chooser .location {
+    display: block !important;
+    width: 100% !important;
+    /* Stock deckelt .location (wie alle Inputs) auf max-width:16em
+       und verkleinert auf .8em – Metrik wie die echten Eingabefelder */
+    max-width: 100% !important;
+    box-sizing: border-box;
+    background: #ffffff;
+    border: 1px solid var(--kb-border-strong);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 14px;
+    line-height: 1.3;
+    cursor: pointer;
+}
+
+/* ---------- Feldzeilen der Formulare (Keeper-Prinzip) ----------
+   Kompakte Controls (Zahl/Uhrzeit/Datum/Checkbox): eine Zeile mit
+   Label links und Feld am RECHTEN Kartenrand. Text/Select/E-Mail:
+   Label ÜBER vollbreitem Feld. Der Feldtyp steckt als Klasse im
+   form-field-Kind (guac-form) → :has(). Gilt für manage-Formulare,
+   Präferenzen UND die Parameter-Abschnitte des Sitzungsmenüs;
+   die Login-Felder liegen NICHT in .fields und bleiben unberührt.
+   display braucht !important: Stock setzt table-row bei gleicher
+   Spezifität, und das Extension-CSS wird VOR dem Stock-CSS in die
+   Seite eingebettet – Reihenfolge entscheidet sonst gegen uns. */
+.form .fields > .labeled-field {
+    display: flex !important;
+    flex-direction: column;
+    margin: 0 0 14px;
+}
+
+/* Stocks Einrück-Linie links neben den Feldern – Keeper zeigt keine.
+   display:block statt Stocks table: table schrumpft auf Inhaltsbreite
+   und die Felder erreichen den rechten Kartenrand nie */
+.form .fields {
+    display: block !important;
+    width: 100%;
+    box-sizing: border-box;
+    border-left: none !important;
+    padding-left: 0 !important;
+    /* Stock: margin 1em rundum – oben raus, unten moderat */
+    margin: 0 0 8px !important;
+}
+
+.form .fields > .labeled-field .field-header {
+    display: block !important;
+    width: auto !important;
+    padding: 0 0 4px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--kb-text-secondary);
+}
+
+.form .fields > .labeled-field .form-field {
+    display: block !important;
+}
+
+.form .fields > .labeled-field .form-field input[type="text"],
+.form .fields > .labeled-field .form-field input[type="email"],
+.form .fields > .labeled-field .form-field input[type="password"],
+.form .fields > .labeled-field .form-field select,
+.form .fields > .labeled-field .form-field textarea {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.form .fields > .labeled-field:has(.number-field),
+.form .fields > .labeled-field:has(.checkbox-field),
+.form .fields > .labeled-field:has(.time-field),
+.form .fields > .labeled-field:has(.date-field) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.form .fields > .labeled-field:has(.number-field) .field-header,
+.form .fields > .labeled-field:has(.checkbox-field) .field-header,
+.form .fields > .labeled-field:has(.time-field) .field-header,
+.form .fields > .labeled-field:has(.date-field) .field-header {
+    padding: 0;
+    flex: 0 1 auto;
+}
+
+/* Stock gibt den form-field-Zellen der Parameter-Formulare width:100%
+   – als Flex-Item frisst das den Platz und der Input klebt am Label;
+   fürs Rechtsbündige muss die Zelle auf Inhaltsbreite schrumpfen */
+.form .fields > .labeled-field:has(.number-field) .form-field,
+.form .fields > .labeled-field:has(.checkbox-field) .form-field,
+.form .fields > .labeled-field:has(.time-field) .form-field,
+.form .fields > .labeled-field:has(.date-field) .form-field {
+    width: auto !important;
+    flex: 0 0 auto;
+}
+
+.form .fields > .labeled-field .number-field input {
+    width: 110px;
+    box-sizing: border-box;
+}
+
+/* ---------- Verlauf im Verbindungsformular (Keeper) ----------
+   Die history-Tabelle ist KEIN table.sorted – Stock lässt sie nackt
+   und zentriert. Keeper: grauer Kopfbalken, alles linksbündig,
+   Zebra-Streifen, Uhr-Icon vor der Dauer. */
+/* Die nowrap-Spalten brauchen mehr Breite als das 40px-Segment-
+   Padding lässt – wie Keeper bis kurz vor die Kartenkanten ziehen */
+.view .history table {
+    width: calc(100% + 56px);
+    margin: 0 -28px;
+    border-collapse: collapse;
+}
+
+.view .history {
+    overflow-x: auto;
+}
+
+.view .history th {
+    background: var(--kb-surface);
+    color: var(--kb-text);
+    font-weight: 600;
+    text-align: left;
+    padding: 8px 10px;
+    white-space: nowrap;
+}
+
+.view .history td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--kb-table-divider);
+    white-space: nowrap;
+}
+
+.view .history tbody tr:nth-child(odd) {
+    background: var(--kb-row-hover);
+}
+
+/* Uhr vor der Dauer (Spalte 3: Benutzername/Beginn/Dauer/Host) */
+.view .history td:nth-child(3)::before {
+    content: "";
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 6px;
+    vertical-align: -2px;
+    background: var(--kb-text-muted);
+    -webkit-mask: url('app/ext/kevin-branding/images/tab-history.svg') center / contain no-repeat;
+    mask: url('app/ext/kevin-branding/images/tab-history.svg') center / contain no-repeat;
+}
+
+/* ---------- Pager (Verlauf, Listen) im Keeper-Stil ----------
+   Zahlen als Kästchen statt unterstrichener Links; aktive Seite
+   hellblau mit Primärrahmen, Pfeil-Icons ruhig grau */
+.pager .set-page {
+    display: inline-block;
+    min-width: 30px;
+    padding: 5px 8px;
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid var(--kb-border);
+    border-radius: 6px;
+    color: var(--kb-text) !important;
+    text-decoration: none !important;
+    font-weight: 500;
+    margin: 0 2px;
+}
+
+.pager .set-page:hover {
+    background: var(--kb-row-selected);
+}
+
+.pager .icon {
+    opacity: .45;
+}
+
+.pager .icon.disabled {
+    opacity: .18;
+}
+
+/* ---------- Kleinigkeiten ---------- */
+
+/* Auswahl-/Aktivzustände in Listen Richtung Primärblau schieben */
+.list-item.selected {
+    background: var(--kb-primary) !important;
+    color: #ffffff !important;
+}
+
+.pager .set-page.current {
+    background: var(--kb-row-selected) !important;
+    border-color: var(--kb-primary) !important;
+    color: var(--kb-primary) !important;
+}
+
+/* Client-Screens der Original-UI (Datei-Browser, Breadcrumbs, Zoom):
+   restliche Gelbgrün-Zustände auf Kevin-Töne drehen */
+.file-browser .list-item.focused .caption {
+    background: rgba(29, 78, 216, 0.12) !important;
+}
+
+#filesystem-menu .header.breadcrumbs .breadcrumb:hover {
+    background-color: var(--kb-row-selected) !important;
+}
+
+.client-zoom .client-zoom-in:hover,
+.client-zoom .client-zoom-out:hover {
+    background: var(--kb-row-selected) !important;
+}
+
+/* ---------- Hinweise, Notifications & Modals ---------- */
+
+/* Warn-Hinweise (z. B. „Benutzer ist aktuell angemeldet"):
+   Stock-Orange → Kevin-Warning-Töne */
+.notice {
+    background: var(--kb-warning-bg) !important;
+    border: 1px solid var(--kb-warning-border) !important;
+    color: var(--kb-warning-text) !important;
+    border-radius: 6px;
+}
+
+/* Benachrichtigungs-Karten (guacNotification: Downloads, Statusmeldungen) */
+.notification {
+    border: 1px solid var(--kb-border) !important;
+    border-radius: 10px;
+    box-shadow: var(--kb-shadow-menu) !important;
+}
+
+.notification.error {
+    background: var(--kb-danger-surface) !important;
+}
+
+/* Fortschrittsbalken: Stock-Grün → Primärblau */
+.notification .progress {
+    background-color: var(--kb-border) !important;
+}
+
+.notification .progress .bar {
+    background: var(--kb-primary) !important;
+}
+
+/* Client-Statusdialoge (Verbinden/Getrennt/Fehler) im Keeper-Stil:
+   frei schwebender Text auf dunklem Grund statt Karte, helle Buttons,
+   „Abmelden" in der Markenfarbe, Marke unter den Buttons */
+.client-status-modal {
+    background: rgba(11, 23, 48, 0.85) !important;
+}
+
+.client-status-modal .notification,
+.client-status-modal .notification.error {
+    background: transparent !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+    max-width: 560px !important;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.client-status-modal .notification .title-bar,
+.client-status-modal .notification.error .title-bar {
+    background: transparent !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.client-status-modal .notification .buttons button {
+    background: #ffffff !important;
+    border: 1px solid #ffffff !important;
+    color: var(--kb-text) !important;
+    font-weight: 600;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.client-status-modal .notification .buttons button:hover {
+    background: #E2E8F0 !important;
+    border-color: #E2E8F0 !important;
+}
+
+/* Stock legt auf home/reconnect/logout-Buttons ::before-Icons in WEISS
+   (für seine dunklen Buttons) – auf den hellen Kevin-Buttons unsichtbar.
+   brightness(0) dreht sie auf Schwarz, passend zu Text und Accent. */
+.client-status-modal .notification .buttons button::before {
+    filter: brightness(0);
+    opacity: .8;
+}
+
+/* „Abmelden" als Marken-Button (Keeper: Gelb) – Navy-Text auf Accent */
+.client-status-modal .notification .buttons button.logout {
+    background: var(--kb-accent) !important;
+    border-color: var(--kb-accent) !important;
+    color: var(--kb-navy) !important;
+}
+
+/* Marke unter den Buttons (Keeper zeigt dort das Logo) … */
+.client-status-modal .notification:has(.buttons button)::after {
+    content: "";
+    display: block;
+    width: 34px;
+    height: 34px;
+    margin: 22px auto 0;
+    background: url('app/ext/kevin-branding/images/kevin-logo.svg') center/contain no-repeat;
+}
+
+/* … und beim Verbindungsaufbau (noch keine Buttons) ein Lade-Spinner */
+@keyframes kb-spin {
+    to { transform: rotate(360deg); }
+}
+
+.client-status-modal .notification:not(.error):not(:has(.buttons button))::after {
+    content: "";
+    display: block;
+    width: 28px;
+    height: 28px;
+    margin: 20px auto 0;
+    border: 3px solid rgba(255, 255, 255, 0.25);
+    border-top-color: var(--kb-accent);
+    border-radius: 50%;
+    animation: kb-spin 0.8s linear infinite;
+}
+
+/* guac-modal-Backdrop (Abmelde-/Statusdialoge) */
+.global-status-modal guac-modal {
+    background: var(--kb-backdrop) !important;
+}
+
+/* ---------- Client-Session (Original-UI) ---------- */
+
+/* Menü (Strg+Alt+Shift): Stock-Grau → Weiß; die Navy-Kopfzeile kommt
+   bereits über die .header-Regel */
+#guac-menu {
+    background: #ffffff !important;
+}
+
+/* Zwischenablage-Feld: nur Rahmen angleichen – die transparente
+   Textfarbe ist ein Stock-Trick und bleibt unangetastet */
+#guac-menu textarea {
+    border: 1px solid var(--kb-border-strong) !important;
+    border-radius: 6px !important;
+}
+
+/* Zwischenablage-Hinweis wie ein Platzhalter (Keeper: „Click to view
+   clipboard data…" in Mono, oben links) statt grauem Mittelbalken:
+   der Balken ist das TEXT-Element (Stock: flex:1 + rgba-Hintergrund
+   + zentriert + kursiv + Hover-Unterstreichung) */
+#guac-menu .clipboard-contents-hidden-hint {
+    background: transparent !important;
+    border: none !important;
+    align-items: flex-start !important;
+}
+
+#guac-menu .clipboard-contents-hidden-hint .clipboard-contents-hidden-hint-text {
+    background: transparent !important;
+    color: var(--kb-text-faint) !important;
+    font-family: 'IBM Plex Mono', Consolas, monospace;
+    font-size: 13px;
+    font-style: normal !important;
+    text-align: left !important;
+    padding: 10px 12px !important;
+}
+
+#guac-menu .clipboard-contents-hidden-hint:hover .clipboard-contents-hidden-hint-text {
+    text-decoration: none !important;
+}
+
+/* Eingabemethoden wie Keeper (Sitzungsmenü UND Präferenzen-Seite):
+   das riesige Stock-Tablet-Bild der Texteingabe verschwindet (nur
+   dort ist die figure ERSTES Kind der choice – die Illustrationen
+   der Mausemulation bleiben) … */
+#guac-menu .menu-section .choice > .figure:first-child,
+.preferences .choice > .figure:first-child {
+    display: none !important;
+}
+
+/* … stattdessen kleine Icons zwischen Radio und Label. Das Radio
+   steckt IM Label (nur bei der Eingabemethode) → Label als Flex,
+   Radio per order nach vorn, Icon als ::before dazwischen. */
+#guac-menu .menu-section .choice > label:has(> input[type="radio"]),
+.preferences .choice > label:has(> input[type="radio"]) {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+#guac-menu .menu-section .choice > label:has(> input[type="radio"]) > input,
+.preferences .choice > label:has(> input[type="radio"]) > input {
+    order: -1;
+    margin: 0;
+}
+
+#guac-menu .menu-section .choice > label:has(> input[type="radio"])::before,
+.preferences .choice > label:has(> input[type="radio"])::before {
+    content: "";
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    background: currentColor;
+    -webkit-mask: var(--kb-im-icon) center / contain no-repeat;
+    mask: var(--kb-im-icon) center / contain no-repeat;
+}
+
+#guac-menu .menu-section .choice:nth-of-type(1) > label,
+.preferences .section.input-method .choice:nth-of-type(1) > label { --kb-im-icon: url('app/ext/kevin-branding/images/tab-sessions.svg'); }
+#guac-menu .menu-section .choice:nth-of-type(2) > label,
+.preferences .section.input-method .choice:nth-of-type(2) > label { --kb-im-icon: url('app/ext/kevin-branding/images/input-text.svg'); }
+#guac-menu .menu-section .choice:nth-of-type(3) > label,
+.preferences .section.input-method .choice:nth-of-type(3) > label { --kb-im-icon: url('app/ext/kevin-branding/images/input-osk.svg'); }
+
+/* Beschreibungstexte der Auswahl eingerückt und ruhig (Keeper) */
+#guac-menu .menu-section .choice > p.caption,
+.preferences .choice > p.caption {
+    margin: 4px 0 14px 26px;
+    color: var(--kb-text-secondary);
+}
+
+/* Mausemulations-Blöcke wie Keeper untereinander linksbündig statt
+   Stock-zentriert nebeneinander */
+.preferences .section.mouse-mode .choices {
+    text-align: left;
+}
+
+.preferences .section.mouse-mode .choice {
+    display: block;
+    margin: 0 0 18px;
+}
+
+/* Geräte-Einträge (Shared Drive) als weiße Kachel mit Rahmen statt
+   grauem Stock-Kasten. NUR background-color setzen – das Shorthand
+   würde Stocks drive.svg-Icon (background-image der Kachel) löschen */
+#guac-menu .device {
+    background-color: #ffffff !important;
+    background-position: 14px center !important;
+    background-size: 18px 18px !important;
+    border: 1px solid var(--kb-border) !important;
+    border-radius: 8px;
+}
+
+#guac-menu .device:hover {
+    background-color: var(--kb-row-selected) !important;
+}
+
+/* ---------- Verbindungs-Dropdown im Sitzungsmenü ----------
+   Guacamole blendet die Verbindungsauswahl erst ab MEHR ALS EINER
+   Verbindung im Baum ein (sonst gibt es nichts zu wechseln; ein
+   ng-hide-Override zeigt nur eine leere Hülle). Layout wie Keeper:
+   Kopfzeile bricht um – oben K-Logo + Profil, DARUNTER das Feld
+   in voller Breite. */
+#guac-menu .header {
+    flex-wrap: wrap;
+}
+
+/* K-Logo links in der Menü-Kopfzeile (wie das Keeper-Logo) */
+#guac-menu .header::before {
+    content: "";
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    margin: 0 10px 0 12px;
+    align-self: center;
+    background: url('app/ext/kevin-branding/images/kevin-logo.svg') center/contain no-repeat;
+}
+
+/* Profil bleibt rechts in der ersten Zeile – auch wenn kein Titel-h2
+   daneben steht (Mehrfach-Fall: das Feld rückt in Zeile 2) */
+#guac-menu .header .user-menu {
+    margin-left: auto;
+}
+
+/* Verbindungsauswahl als eigene volle Zeile UNTER der gesamten
+   Navy-Zeile, auf WEISSEM Grund (Keeper: Bar → weißer Feldbereich →
+   Menü-Inhalt); die gelbe Markenkante rückt an die Navy-Zeile */
+#guac-menu .header h2.connection-select-menu {
+    order: 10;
+    flex: 1 1 100%;
+    margin: 0;
+    padding: 12px 16px;
+    background: #ffffff;
+    border-top: 2px solid var(--kb-accent);
+}
+
+/* Ist das Feld sichtbar, säße die Header-Kante sonst doppelt –
+   unterm weißen Feldbereich braucht es keine zweite gelbe Linie */
+#guac-menu .header:has(h2.connection-select-menu:not(.ng-hide)) {
+    border-bottom: none !important;
+}
+
+/* Das geschlossene Feld: weißes Eingabefeld in der Navy-Bar */
+#guac-menu .connection-select-menu .menu-dropdown {
+    display: block;
+    background: #ffffff;
+    border: 1px solid var(--kb-border-strong) !important;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+#guac-menu .connection-select-menu .menu-dropdown .menu-title {
+    display: inline-block;
+    padding: 6px 10px;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: none;
+    color: var(--kb-text);
+}
+
+/* Die App-Bar invertiert Menü-Icons auf Weiß – im weißen Feld zurück */
+#guac-menu .header .connection-select-menu .menu-title,
+#guac-menu .header .connection-select-menu .menu-indicator {
+    filter: none;
+}
+
+/* Aufgeklappter Verbindungsbaum als weiße Karte mit Filter;
+   text-transform zurücksetzen – der Baum erbt sonst das VERSAL der
+   Kopfzeilen-h2 (Gruppen erschienen als „KEVIN"/„T0-SERVER") */
+#guac-menu .connection-select-menu .menu-dropdown .menu-contents {
+    background: #ffffff !important;
+    border: none !important;
+    border-radius: 0 0 8px 8px;
+    box-shadow: var(--kb-shadow-menu) !important;
+    padding: 10px;
+    text-transform: none;
+    font-weight: 400;
+}
+
+/* Drag-over-Zustände + fokussierte Kachel: Stock-Blau #3161A9 → Primary */
+.client .drop-pending .display {
+    background: var(--kb-primary) !important;
+}
+
+.tiled-client-grid .client-tile.focused .client-tile-header {
+    background-color: var(--kb-primary) !important;
+}
+
+/* Danger-Einträge in Menüs („Trennen"): wie Keeper weißer Eintrag mit
+   rotem Text statt roter Dauer-Vollfläche – Vollrot erst beim Hover
+   (die Hover-Regel steht bei den Interaktionsfarben) */
+.menu-dropdown .menu-contents li a.danger {
+    background-color: transparent !important;
+    color: var(--kb-danger) !important;
+}
+
+/* Stocks x.svg des Trennen-Eintrags ist WEISS (für den roten Grund
+   gedacht) – eigenes X als mask in currentColor: rot im Ruhezustand,
+   weiß sobald der Hover die Zeile rot füllt */
+.client .user-menu .menu-contents li a.disconnect {
+    background-image: none !important;
+    position: relative;
+}
+
+.client .user-menu .menu-contents li a.disconnect::before {
+    content: "";
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    width: 16px;
+    height: 16px;
+    transform: translateY(-50%);
+    background: currentColor;
+    -webkit-mask: url('app/ext/kevin-branding/images/menu-disconnect.svg') center / contain no-repeat;
+    mask: url('app/ext/kevin-branding/images/menu-disconnect.svg') center / contain no-repeat;
+}
+
+/* ---------- Import (CSV/JSON, M5.4-Vorgriff der Original-UI) ---------- */
+
+.file-upload-container {
+    border: 1px solid var(--kb-border) !important;
+    border-radius: 10px;
+    box-shadow: var(--kb-shadow-card) !important;
+}
+
+.file-upload-container .drop-target {
+    background: var(--kb-row-hover) !important;
+    border: 1px dashed var(--kb-border-strong) !important;
+    border-radius: 10px;
+}
+
+.file-upload-container .drop-target.file-present {
+    background: var(--kb-row-selected) !important;
+}
+
+.file-upload-container .drop-target.drop-pending {
+    background: var(--kb-primary) !important;
+}
+
+/* ---------- Standort-Wähler (Verbindungs-/Gruppenformular) ---------- */
+
+.location-chooser .dropdown {
+    background: #ffffff !important;
+    border: 1px solid var(--kb-border) !important;
+    border-radius: 6px;
+    box-shadow: var(--kb-shadow-menu) !important;
+}
+
+/* Formularfelder der inneren Seiten angleichen (Stock: Rahmen #777,
+   Radius 2.56px, font-size .8em, padding .25em – dadurch hatten Text-,
+   Zahl- und Datumsfelder sichtbar verschiedene Höhen). EINE Metrik für
+   alle Feldtypen; bewusst OHNE !important – spezifischere Stock-Regeln
+   (z. B. Login, Filter-Lupe im Header) behalten Vorrang. */
+input[type="text"],
+input[type="password"],
+input[type="number"],
+input[type="email"],
+input[type="date"],
+input[type="time"],
+select,
+textarea {
+    border: 1px solid var(--kb-border-strong);
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: var(--kb-text);
+    font-size: 14px;
+    font-family: inherit;
+    line-height: 1.3;
+    padding: 6px 10px;
+    box-sizing: border-box;
+}
+
+select {
+    padding: 6px 8px;
+}

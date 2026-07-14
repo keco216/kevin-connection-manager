@@ -1,0 +1,9 @@
+{
+  "name": "kcm-scripts",
+  "private": true,
+  "type": "module",
+  "description": "Hilfsskripte gegen den laufenden Stack: branding-verify.mjs (Playwright)",
+  "devDependencies": {
+    "playwright": "^1.61.1"
+  }
+}

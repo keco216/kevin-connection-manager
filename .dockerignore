@@ -1,0 +1,3 @@
+# Nur guacamole-home/ wird ins Image kopiert – Rest aus dem Build-Kontext halten
+*
+!guacamole-home/

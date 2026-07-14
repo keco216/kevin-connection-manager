@@ -1,0 +1,75 @@
+# Kevin Connection Manager – Server-Stack für Portainer (hinter Nginx Proxy Manager).
+# Übernimmt das bewährte Layout des bisherigen Guacamole-Stacks 1:1: Init-Container
+# erzeugt das DB-Schema, PostgreSQL 15, guacd mit Laufwerks-/Aufzeichnungs-Volumes,
+# Guacamole auf Port 7070 (der NPM zeigt bereits dorthin und terminiert TLS).
+#
+# Einziger Unterschied zum alten Stack: Das Guacamole-Image kommt von GHCR und
+# enthält die Kevin-Branding-Extension bereits – der frühere Bind-Mount
+# /opt/guacamole/branding:/etc/guacamole/extensions entfällt ersatzlos.
+#
+# Vor dem Deploy in Portainer die Stack-Umgebungsvariable POSTGRES_PASSWORD setzen!
+version: "3.8"
+
+services:
+  guacinit:
+    image: guacamole/guacamole:1.6.0
+    container_name: guac_init
+    user: "0:0"
+    command: sh -c "/opt/guacamole/bin/initdb.sh --postgresql > /init/initdb.sql"
+    volumes:
+      - guac_init:/init
+    restart: "no"
+
+  guacdb:
+    image: postgres:15.2-alpine
+    container_name: guacamole_db
+    environment:
+      POSTGRES_USER: guacamole_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD als Stack-Umgebungsvariable in Portainer setzen}
+      POSTGRES_DB: guacamole_db
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - guac_db:/var/lib/postgresql/data
+      # Schema-Skript aus dem Init-Container; läuft nur beim allerersten Start
+      - guac_init:/docker-entrypoint-initdb.d:ro
+    depends_on:
+      guacinit:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  guacd:
+    image: guacamole/guacd:1.6.0
+    container_name: guacd
+    volumes:
+      - guac_drive:/drive
+      - guac_record:/record
+    restart: unless-stopped
+
+  guacamole:
+    # Offizielles guacamole/guacamole:1.6.0 plus Kevin-Branding-Extension
+    # (gebaut von .github/workflows/build-image.yml aus diesem Repo)
+    image: ghcr.io/keco216/kcm-guacamole:1.6.0
+    container_name: guacamole
+    depends_on:
+      - guacd
+      - guacdb
+    environment:
+      GUACD_HOSTNAME: guacd
+      POSTGRESQL_HOSTNAME: guacdb
+      POSTGRESQL_DATABASE: guacamole_db
+      POSTGRESQL_USERNAME: guacamole_user
+      POSTGRESQL_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD als Stack-Umgebungsvariable in Portainer setzen}
+      # Vorbereitung für Session-Recording (M8)
+      RECORDING_SEARCH_PATH: /record
+    volumes:
+      - guac_record:/record
+    ports:
+      # NPM ist auf diesen Port eingestellt – nicht ändern
+      - "7070:8080"
+    restart: unless-stopped
+
+volumes:
+  guac_db:
+  guac_init:
+  guac_drive:
+  guac_record:

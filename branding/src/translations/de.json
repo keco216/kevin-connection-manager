@@ -1,0 +1,16 @@
+{
+    "APP" : {
+        "NAME" : "Kevin Connection Manager"
+    },
+    "CLIENT" : {
+        "TEXT_CLIENT_STATUS_CONNECTING" : "Verbindungsaufbau zu Kevin Connection Manager...",
+        "TEXT_CLIENT_STATUS_WAITING" : "Verbindungsaufbau zu Kevin Connection Manager. Bitte warten...",
+        "TEXT_CLIENT_STATUS_UNSTABLE" : "Die Verbindung zum Kevin-Connection-Manager-Server ist nicht stabil."
+    },
+    "SETTINGS_PREFERENCES" : {
+        "SECTION_HEADER_APPEARANCE" : "Darstellung",
+        "HELP_APPEARANCE" : "Hier lässt sich festlegen, ob der Bereich „Letzte Verbindungen“ auf der Startseite angezeigt wird und wie viele Einträge er enthält.",
+        "FIELD_HEADER_SHOW_RECENT_CONNECTIONS" : "Letzte Verbindungen anzeigen:",
+        "FIELD_HEADER_NUMBER_RECENT_CONNECTIONS" : "Anzahl der letzten Verbindungen:"
+    }
+}

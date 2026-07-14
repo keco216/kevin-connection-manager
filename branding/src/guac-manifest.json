@@ -1,0 +1,38 @@
+{
+    "guacamoleVersion": "1.6.0",
+    "name": "Kevin Connection Manager Branding",
+    "namespace": "kevin-branding",
+    "css": [
+        "css/kevin.css"
+    ],
+    "translations": [
+        "translations/en.json",
+        "translations/de.json"
+    ],
+    "resources": {
+        "images/kevin-logo.svg": "image/svg+xml",
+        "images/chevron-right.svg": "image/svg+xml",
+        "images/chevron-down.svg": "image/svg+xml",
+        "images/tab-sessions.svg": "image/svg+xml",
+        "images/tab-history.svg": "image/svg+xml",
+        "images/tab-user.svg": "image/svg+xml",
+        "images/tab-groups.svg": "image/svg+xml",
+        "images/tab-connections.svg": "image/svg+xml",
+        "images/tab-prefs.svg": "image/svg+xml",
+        "images/launch.svg": "image/svg+xml",
+        "images/input-text.svg": "image/svg+xml",
+        "images/input-osk.svg": "image/svg+xml",
+        "images/tree-folder.svg": "image/svg+xml",
+        "images/tree-folder-open.svg": "image/svg+xml",
+        "images/tree-monitor.svg": "image/svg+xml",
+        "images/tree-terminal.svg": "image/svg+xml",
+        "images/tree-plug.svg": "image/svg+xml",
+        "images/tree-user.svg": "image/svg+xml",
+        "images/tree-user-group.svg": "image/svg+xml",
+        "images/menu-home.svg": "image/svg+xml",
+        "images/menu-settings.svg": "image/svg+xml",
+        "images/menu-logout.svg": "image/svg+xml",
+        "images/menu-disconnect.svg": "image/svg+xml",
+        "images/field-globe.svg": "image/svg+xml"
+    }
+}

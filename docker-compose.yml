@@ -1,0 +1,68 @@
+# Kevin Connection Manager – Guacamole-Stack (Backend unverändert, offizielle Images)
+# Start:  docker compose up -d          Stop: docker compose down
+# Reset (inkl. Datenbank!):             docker compose down -v
+name: kcm
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-guacamole_db}
+      POSTGRES_USER: ${POSTGRES_USER:-guacamole}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD ist nicht gesetzt - bitte .env aus .env.example erstellen}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      # Schema-Skripte laufen nur beim allerersten Start (leeres Datenverzeichnis)!
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      # $$ = Escaping, damit die Variablen erst IM Container aufgeloest werden
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+  guacd:
+    image: guacamole/guacd:1.6.0
+    restart: unless-stopped
+    volumes:
+      # Virtuelles „Guacamole"-Laufwerk der RDP-Sitzungen (M5.2). Jede
+      # Verbindung bekommt per drive-path ein Unterverzeichnis, z. B.
+      # /drive/dc1 – auf dem Host liegt das unter ./drive/ (gitignored).
+      - ./drive:/drive
+
+  guacamole:
+    image: guacamole/guacamole:1.6.0
+    restart: unless-stopped
+    environment:
+      GUACD_HOSTNAME: guacd
+      POSTGRESQL_HOSTNAME: postgres
+      POSTGRESQL_DATABASE: ${POSTGRES_DB:-guacamole_db}
+      POSTGRESQL_USERNAME: ${POSTGRES_USER:-guacamole}
+      POSTGRESQL_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD ist nicht gesetzt - bitte .env aus .env.example erstellen}
+      # Branding-Extension (M7 v1): Startskript des Images kopiert den Inhalt
+      # in sein eigenes GUACAMOLE_HOME; Extensions dort werden zusätzlich zur
+      # automatisch konfigurierten JDBC-Extension geladen (siehe branding/README.md)
+      GUACAMOLE_HOME: /opt/kevin/guacamole-home
+    volumes:
+      - ./guacamole-home:/opt/kevin/guacamole-home:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      guacd:
+        condition: service_started
+
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      # Bei Port-80-Konflikt auf "8080:80" ausweichen (siehe README)
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - guacamole
+
+volumes:
+  postgres-data:

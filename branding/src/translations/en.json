@@ -1,0 +1,10 @@
+{
+    "APP" : {
+        "NAME" : "Kevin Connection Manager"
+    },
+    "CLIENT" : {
+        "TEXT_CLIENT_STATUS_CONNECTING" : "Connecting to Kevin Connection Manager...",
+        "TEXT_CLIENT_STATUS_WAITING" : "Connected to Kevin Connection Manager. Waiting for response...",
+        "TEXT_CLIENT_STATUS_UNSTABLE" : "The network connection to the Kevin Connection Manager server appears unstable."
+    }
+}
