@@ -13,7 +13,13 @@
     --kb-primary-hover: #1E40AF;
     --kb-navy: #0F1E3D;
     --kb-accent: #FACC15;
+    /* Textfarbe AUF der Accent-Fläche. Eigene Variable, weil der Dark-Modus
+       dort Blau statt Gelb setzt – Navy-Text wäre darauf unlesbar. */
+    --kb-accent-text: var(--kb-navy);
     --kb-bg: #FFFFFF;
+    /* Seitenfläche hinter den Karten. Im Hellen setzt Stock sie selbst auf
+       Weiß; die Variable existiert für den Dark-Modus, der sie überschreibt. */
+    --kb-page-bg: #FFFFFF;
     --kb-text: #111827;
     --kb-text-muted: #6B7280;
     --kb-text-faint: #9CA3AF;
@@ -37,6 +43,97 @@
     --kb-shadow-card: 0 1px 3px rgba(15, 30, 61, 0.05), 0 10px 30px rgba(15, 30, 61, 0.07);
     --kb-osk-key: #1E3355;
     --kb-osk-key-border: #33496F;
+    /* Zeichenfarbe der Baum-/Menü-Icons. Eigene Variable, weil die Icons per
+       mask gefärbt werden und im Dunklen aufhellen müssen. */
+    --kb-icon: #374151;
+    /* Sekundärfläche: Buttons „Kopieren“/„Abbruch“/„Zurück“ und die
+       Statusdialog-Knöpfe */
+    --kb-surface-2: #ECEFF3;
+    --kb-surface-2-hover: #E1E6EC;
+    /* Seitenfläche der manage-Formulare – leicht getönt gegen die weiße Karte */
+    --kb-view-bg: #F4F6FA;
+    /* Feine Rahmen der Verlaufstabelle im Verbindungsformular */
+    --kb-border-subtle: #E9ECF1;
+    /* Inaktive Buttons – eigene Werte, damit sie in beiden Modi zurücktreten
+       ohne unlesbar zu werden */
+    --kb-disabled-bg: #E5E7EB;
+    --kb-disabled-text: #9CA3AF;
+    /* Schleier über dem Thumbnail beim Überfahren (Recents) – dunkelgrau,
+       nicht schwarz: Er soll das Vorschaubild dämpfen, nicht auslöschen */
+    --kb-thumb-veil: rgba(96, 101, 112, 0.62);
+}
+
+/* ---------- Dunkler Modus (M11) ----------
+   Gesteuert allein über data-kb-theme am <html>. js/kevin-theme.js setzt das
+   Attribut IMMER – bei der Einstellung „Wie im System“ löst es die
+   Systemvorgabe selbst auf und horcht auf Änderungen. Deshalb steht die
+   Palette hier nur EINMAL; eine zweite Fassung in einer
+   prefers-color-scheme-Query wäre dieselbe Liste zum doppelt Pflegen.
+
+   Flächen: Grau/Schwarz. Text: Weiß. Marken-Gelb bleibt der Akzent (CTA,
+   App-Bar-Kante) und Primärblau bleibt die Interaktionsfarbe – beide
+   unverändert aus dem hellen Modus, damit die Marke gleich bleibt.
+
+   Achtung, umgekehrte Flächen-Logik: Im Hellen ist --kb-surface DUNKLER als
+   --kb-bg (abgesetztes Grau auf Weiß), im Dunklen HELLER (erhöhte Fläche auf
+   Schwarz). Wer hier Werte tauscht, muss das mitdenken. */
+:root[data-kb-theme="dark"] {
+    --kb-primary: #1D4ED8;
+    --kb-primary-hover: #2563EB;
+    --kb-navy: #101114;
+    --kb-accent: #FACC15;
+    --kb-accent-text: #101114;
+    --kb-bg: #191A1E;
+    --kb-page-bg: #0E0F11;
+    --kb-text: #F5F6F7;
+    --kb-text-secondary: #C9CDD4;
+    --kb-text-muted: #9BA1AB;
+    --kb-text-faint: #737985;
+    --kb-border: #2C2E34;
+    --kb-border-strong: #414651;
+    --kb-surface: #212329;
+    --kb-surface-2: #2A2D33;
+    --kb-surface-2-hover: #363A42;
+    --kb-view-bg: #0E0F11;
+    --kb-border-subtle: #2C2E34;
+    --kb-danger: #F87171;
+    --kb-danger-surface: #2A1A1A;
+    --kb-focus-ring: rgba(29, 78, 216, 0.45);
+    --kb-row-selected: #1B2740;
+    --kb-row-hover: #212329;
+    --kb-table-divider: #2C2E34;
+    --kb-navy-text-muted: #9BA1AB;
+    --kb-warning-bg: #2A2418;
+    --kb-warning-border: #4A3F22;
+    --kb-warning-text: #FCD34D;
+    --kb-backdrop: rgba(0, 0, 0, 0.6);
+    --kb-shadow-login-card: 0 24px 70px rgba(0, 0, 0, 0.75);
+    --kb-shadow-menu: 0 10px 30px rgba(0, 0, 0, 0.55);
+    --kb-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.45), 0 10px 30px rgba(0, 0, 0, 0.35);
+    --kb-osk-key: #212329;
+    --kb-osk-key-border: #414651;
+    --kb-icon: #A8AEB8;
+    --kb-disabled-bg: #24262B;
+    --kb-disabled-text: #8B919B;
+    /* Etwas dunkler als im hellen Modus, aber NICHT schwarz: Reines Schwarz
+       löscht das ohnehin dunkle Vorschaubild komplett aus. */
+    --kb-thumb-veil: rgba(58, 62, 70, 0.66);
+}
+
+/* Stock setzt diese Flächen selbst auf Weiß und lädt NACH uns – hier führt
+   kein Weg an !important vorbei. */
+:root[data-kb-theme="dark"] body,
+:root[data-kb-theme="dark"] .view,
+:root[data-kb-theme="dark"] .connection-list-ui,
+:root[data-kb-theme="dark"] #content {
+    background: var(--kb-page-bg) !important;
+    color: var(--kb-text);
+}
+
+/* Bildlaufleisten: Stock/Chromium malt sie im Dunklen sonst hellgrau –
+   ein weißer Balken quer über der Seite (im Verbindungsformular sichtbar). */
+:root[data-kb-theme="dark"] {
+    color-scheme: dark;
 }
 
 /* ---------- Schrift: IBM Plex (M7.1, self-hosted in der .jar) ----------
@@ -368,7 +465,18 @@ h3.header,
    guac-user-menu. Die .header ist bei Stock display:flex mit
    align-items:stretch – margin-left:auto schiebt die Leiste an die
    rechte Kante, direkt vor das Benutzer-Menü. */
+/* Der HTML-Patch hängt die Nav vor JEDES guac-user-menu – in der
+   connection-list-ui gibt es davon ZWEI .header (App-Bar und die Kopfzeile
+   „Alle Verbindungen"), die Nav landet also doppelt im DOM. Sichtbar ist sie
+   nur in der App-Bar; die zweite fiel nie auf, weil ihr weißer Text auf
+   weißem Grund stand – erst der dunkle Modus hat sie sichtbar gemacht.
+   Deshalb: grundsätzlich aus, nur in der App-Bar an. */
 .kevin-nav {
+    display: none;
+}
+
+.view > .header:first-child > .kevin-nav,
+.connection-list-ui > .header:first-child > .kevin-nav {
     display: flex;
     align-items: center;
     gap: 4px;
@@ -431,17 +539,37 @@ h3.header,
 
 /* Eigene Menü-Icons statt der Stock-Bilder. Zuordnung über die
    li-Position (Startseite ist immer der erste Eintrag): settings
-   zuerst, home danach – so behält ein einzelnes li das Haus. */
-.user-menu .menu-contents .page-list > ul.page-list-level > li:last-child > a {
-    background-image: url('app/ext/kevin-branding/images/menu-settings.svg') !important;
+   zuerst, home danach – so behält ein einzelnes li das Haus.
+
+   Eingebunden als ::before mit mask, nicht als background-image des Links:
+   Die Farbe steckt damit in der CSS (--kb-icon) und hellt im dunklen Modus
+   mit auf – als Bild blieben die Icons dort dunkel auf dunkel. Am Link selbst
+   ginge keine mask, sie würde seinen Text mitmaskieren; <input> könnte gar
+   kein ::before tragen (s. Filter-Regel weiter unten).
+   Werte 16px/left:16px sind Stocks Metrik (bg-position 16px, bg-size 16px). */
+.user-menu .menu-contents li > a {
+    background-image: none !important;
+    position: relative;
 }
 
-.user-menu .menu-contents .page-list > ul.page-list-level > li:first-child > a {
-    background-image: url('app/ext/kevin-branding/images/menu-home.svg') !important;
+.user-menu .menu-contents li > a::before {
+    content: "";
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    width: 16px;
+    height: 16px;
+    transform: translateY(-50%);
+    background: var(--kb-icon);
+    -webkit-mask: var(--kb-menu-icon) center / contain no-repeat;
+    mask: var(--kb-menu-icon) center / contain no-repeat;
 }
+
+.user-menu .menu-contents .page-list > ul.page-list-level > li:last-child > a { --kb-menu-icon: url('app/ext/kevin-branding/images/menu-settings.svg'); }
+.user-menu .menu-contents .page-list > ul.page-list-level > li:first-child > a { --kb-menu-icon: url('app/ext/kevin-branding/images/menu-home.svg'); }
 
 .user-menu .menu-contents li a.logout {
-    background-image: url('app/ext/kevin-branding/images/menu-logout.svg') !important;
+    --kb-menu-icon: url('app/ext/kevin-branding/images/menu-logout.svg');
     border-top: 1px solid var(--kb-border);
 }
 
@@ -450,9 +578,7 @@ h3.header,
    Zuordnung deshalb über die Listen-Position der ersten action-list
    (Trennen, Vollbild). Ersetzt Stocks guac-monitor.svg durch das
    eigene Eckklammern-Icon. */
-#guac-menu .user-menu .menu-contents ul.action-list > li:nth-child(2) > a {
-    background-image: url('app/ext/kevin-branding/images/menu-fullscreen.svg') !important;
-}
+#guac-menu .user-menu .menu-contents ul.action-list > li:nth-child(2) > a { --kb-menu-icon: url('app/ext/kevin-branding/images/menu-fullscreen.svg'); }
 
 /* Aktueller Ort („Einstellungen" in den Einstellungen): Stock markiert
    ihn mit a.current und macht ihn mit opacity .25 fast unsichtbar –
@@ -491,17 +617,43 @@ h3.header,
 }
 
 /* Filterfelder überall im Keeper-Stil: graues Rounded-Feld, das beim
-   Fokus weiß wird; nur background-color setzen, damit das Lupen-Icon
-   (background-image des Inputs) erhalten bleibt */
+   Fokus die Kartenfarbe annimmt. */
 .filter input {
     background-color: var(--kb-surface) !important;
     color: var(--kb-text) !important;
     border: 1px solid transparent !important;
     border-radius: 8px !important;
+    /* Die Lupe kommt aus der ::before-Regel unten, nicht mehr als Bild */
+    background-image: none !important;
+}
+
+/* Lupe: Stocks eigenes magnifier.svg dient nur noch als FORM (mask), gefärbt
+   wird aus --kb-icon – als Bild blieb sie im dunklen Modus dunkelgrau auf
+   dunkelgrauem Feld praktisch unsichtbar.
+   Das Icon muss an den Container: <input> kann keine Pseudo-Elemente tragen.
+   Die Werte sind Stocks Metrik (background-position 3.5px, -size 24.5px);
+   .filter hat kein eigenes Padding und das Feld füllt ihn deckungsgleich,
+   deshalb trifft der Bezug. */
+.filter {
+    position: relative;
+}
+
+.filter::before {
+    content: "";
+    position: absolute;
+    left: 3.5px;
+    top: 0;
+    bottom: 0;
+    width: 24.5px;
+    background: var(--kb-icon);
+    -webkit-mask: url('images/magnifier.svg') center / 24.5px 24.5px no-repeat;
+    mask: url('images/magnifier.svg') center / 24.5px 24.5px no-repeat;
+    /* sonst frisst der Streifen Klicks aufs Feld */
+    pointer-events: none;
 }
 
 .filter input:focus {
-    background-color: #ffffff !important;
+    background-color: var(--kb-bg) !important;
     border-color: var(--kb-primary) !important;
     outline: none !important;
     box-shadow: 0 0 0 3px var(--kb-focus-ring) !important;
@@ -566,16 +718,16 @@ a.button:hover,
 button.cancel,
 button.clone,
 button.back {
-    background: #ECEFF3 !important;
+    background: var(--kb-surface-2) !important;
     color: var(--kb-text) !important;
-    border: 1px solid #ECEFF3 !important;
+    border: 1px solid var(--kb-surface-2) !important;
 }
 
 button.cancel:hover,
 button.clone:hover,
 button.back:hover {
-    background: #E1E6EC !important;
-    border-color: #E1E6EC !important;
+    background: var(--kb-surface-2-hover) !important;
+    border-color: var(--kb-surface-2-hover) !important;
 }
 
 /* „Zurück"-Buttons tragen ein weißes Stock-::before-Icon – auf der
@@ -593,7 +745,7 @@ button.save,
 button.import {
     background: var(--kb-accent) !important;
     border-color: var(--kb-accent) !important;
-    color: var(--kb-navy) !important;
+    color: var(--kb-accent-text) !important;
     font-weight: 600;
 }
 
@@ -607,7 +759,7 @@ button.import:hover {
    Rahmen und Text) statt roter Vollfläche; Vollrot erst beim Hover */
 button.danger,
 .button.danger {
-    background: #ffffff !important;
+    background: var(--kb-bg) !important;
     border-color: var(--kb-danger) !important;
     color: var(--kb-danger) !important;
 }
@@ -620,13 +772,15 @@ button.danger:hover,
 }
 
 /* Inaktive Buttons neutral grau statt „hellrot/hellblau" (Keeper wirkt
-   aufgeräumter, weil disabled-Aktionen zurücktreten) */
+   aufgeräumter, weil disabled-Aktionen zurücktreten). Eigene Variablen, weil
+   Randfarbe auf Faint-Text im Dunklen nur ~2,5:1 ergibt – „Beende Sitzung"
+   war dort nicht mehr zu lesen. Zurücktreten ja, verschwinden nein. */
 button:disabled,
 input[type="submit"]:disabled,
 a.button.disabled {
-    background: var(--kb-border) !important;
-    border-color: var(--kb-border) !important;
-    color: var(--kb-text-faint) !important;
+    background: var(--kb-disabled-bg) !important;
+    border-color: var(--kb-disabled-bg) !important;
+    color: var(--kb-disabled-text) !important;
     opacity: 1 !important;
 }
 
@@ -665,6 +819,18 @@ body > textarea.clipboard-service-target {
     opacity: 0;
 }
 
+/* Zwischenablage-Feld im Sitzungsmenü. Stock zielt mit `textarea.clipboard`
+   spezifischer als unsere generische textarea-Metrik und lädt NACH uns –
+   ohne diese Regel bleibt das Feld weiß und leuchtet im dunklen Menü.
+   Nicht mit den versteckten Service-textareas oben verwechseln: DIESES Feld
+   ist sichtbar und wird bedient. */
+.clipboard-editor textarea.clipboard,
+#guac-menu textarea.clipboard {
+    background-color: var(--kb-bg) !important;
+    color: var(--kb-text) !important;
+    border: 1px solid var(--kb-border-strong) !important;
+}
+
 /* ---------- Tabellen (Verlauf, Benutzer, Sitzungen …) ---------- */
 
 /* Stock: grauer Kopfbalken + #aaa-Gitter → helle Kevin-Tabelle.
@@ -678,6 +844,30 @@ table.sorted th {
     border-right: none !important;
     font-weight: 600;
     text-align: left;
+}
+
+/* Sortierpfeil: Stocks down.svg wieder nur als Form; gefärbt aus der
+   Kopfzeilen-Schrift. Als Bild blieb der Pfeil im dunklen Modus unsichtbar. */
+table.sorted th.sortable::after {
+    background-color: currentColor !important;
+    background-image: none !important;
+    -webkit-mask: url('images/down.svg') center / contain no-repeat;
+    mask: url('images/down.svg') center / contain no-repeat;
+}
+
+/* Warnsymbol der Fehlerseiten: Stocks warning.svg trägt fill:#000 – auf
+   dunklem Grund unsichtbar. Als mask in Warnfarbe statt als Bild. */
+#connection-warning::before,
+.fatal-page-error h1::before {
+    background-color: var(--kb-warning-text) !important;
+    background-image: none !important;
+    -webkit-mask: url('images/warning.svg') center / contain no-repeat;
+    mask: url('images/warning.svg') center / contain no-repeat;
+}
+
+/* Aufsteigend: derselbe Pfeil gedreht (Stock tauscht sonst das Bild) */
+table.sorted th.sortable.sort-descending::after {
+    transform: scaleY(-1);
 }
 
 /* Nur horizontale Trennlinien – Keeper-Tabellen haben kein Zellgitter */
@@ -744,7 +934,7 @@ div.recent-connections::before {
 }
 
 div.recent-connections div.connection {
-    background: #ffffff;
+    background: var(--kb-bg);
     border: 1px solid var(--kb-border);
     border-radius: 10px;
     padding: 0 0 12px;
@@ -756,7 +946,7 @@ div.recent-connections div.connection {
 }
 
 .recent-connections .connection:hover {
-    background: #ffffff !important;
+    background: var(--kb-bg) !important;
     box-shadow: var(--kb-shadow-menu);
 }
 
@@ -783,7 +973,27 @@ div.recent-connections div.connection {
     content: "";
     position: absolute;
     inset: 0;
-    background: rgba(148, 153, 163, 0.55);
+    background: var(--kb-thumb-veil);
+}
+
+/* Beschriftungen in Bäumen und Kacheln. Stock nagelt sie auf `color:#000`
+   (`.connection a`, `.connection-group a`, `.user a`, jeweils samt :hover und
+   :visited) und lädt NACH uns – im dunklen Modus stand der Kachelname damit
+   schwarz auf fast schwarzem Grund. Die Farbe muss deshalb hier erzwungen
+   werden; das Grün/Blau der Besucht-Zustände will Stock ohnehin niemand. */
+.connection a,
+.connection a:hover,
+.connection a:visited,
+.connection-group a,
+.connection-group a:hover,
+.connection-group a:visited,
+.user a,
+.user a:hover,
+.user a:visited,
+.user-group a,
+.user-group a:hover,
+.user-group a:visited {
+    color: var(--kb-text) !important;
 }
 
 /* Stocks „aus Letzte Verbindungen entfernen"-X oben rechts – Keeper
@@ -842,57 +1052,62 @@ div.all-connections {
     display: none !important;
 }
 
-/* Expander: Stock-⊞/⊟-Kästchen → Chevrons (eigene Extension-Ressourcen) */
-.expandable > .caption .icon.expand {
-    background-image: url('app/ext/kevin-branding/images/chevron-right.svg') !important;
-}
-
-.expandable.expanded > .caption .icon.expand,
-.expandable.empty > .caption .icon.expand {
-    background-image: url('app/ext/kevin-branding/images/chevron-down.svg') !important;
-}
-
 /* Baum-Icons im Keeper-Stil: Gruppen kräftig in Primärblau, Verbindungen
    als ruhige Outline-Icons – ersetzt Stocks dunkle Ordner/Stecker.
    :not(.expand) schützt die Chevron-Expander, :not(.add) die
-   Aktions-Icons der Toolbar-Buttons. Die Protokoll-Varianten stehen
-   NACH der generischen Verbindungs-Regel (gleiche Spezifität). */
-.connection-group > .caption .icon:not(.expand) {
-    background-image: url('app/ext/kevin-branding/images/tree-folder.svg') !important;
+   Aktions-Icons der Toolbar-Buttons.
+
+   Eingebunden als MASK, nicht als background-image: Die Farbe steckt damit in
+   der CSS (--kb-icon) statt im SVG und hellt im dunklen Modus mit auf. Als
+   background-image wären die Icons dort unsichtbar geblieben – ein SVG als
+   Bild kennt weder currentColor noch unsere Variablen. Die mask nutzt nur die
+   Form; welche Farbe im SVG steht, ist gleichgültig.
+
+   Die Varianten setzen ausschliesslich --kb-tree-icon (die Form). Sie stehen
+   NACH der generischen Regel, weil bei gleicher Spezifität die letzte
+   gewinnt. */
+.expandable > .caption .icon.expand,
+.connection-group > .caption .icon:not(.expand),
+.connection > .caption .icon:not(.expand),
+.icon.user:not(.add),
+.icon.user-group:not(.add),
+.file-browser .directory:not(.previous) > .caption .icon {
+    background-image: none !important;
+    background-color: var(--kb-icon) !important;
+    -webkit-mask: var(--kb-tree-icon) center / contain no-repeat;
+    mask: var(--kb-tree-icon) center / contain no-repeat;
 }
 
-.connection-group.expanded > .caption .icon:not(.expand) {
-    background-image: url('app/ext/kevin-branding/images/tree-folder-open.svg') !important;
+/* Gruppen und Ordner kräftig in Primärblau statt Icon-Grau */
+.connection-group > .caption .icon:not(.expand),
+.file-browser .directory:not(.previous) > .caption .icon {
+    background-color: var(--kb-primary) !important;
 }
 
-.connection > .caption .icon:not(.expand) {
-    background-image: url('app/ext/kevin-branding/images/tree-plug.svg') !important;
-}
+/* Expander: Stock-⊞/⊟-Kästchen → Chevrons */
+.expandable > .caption .icon.expand { --kb-tree-icon: url('app/ext/kevin-branding/images/chevron-right.svg'); }
+
+.expandable.expanded > .caption .icon.expand,
+.expandable.empty > .caption .icon.expand { --kb-tree-icon: url('app/ext/kevin-branding/images/chevron-down.svg'); }
+
+.connection-group > .caption .icon:not(.expand) { --kb-tree-icon: url('app/ext/kevin-branding/images/tree-folder.svg'); }
+.connection-group.expanded > .caption .icon:not(.expand) { --kb-tree-icon: url('app/ext/kevin-branding/images/tree-folder-open.svg'); }
+
+.connection > .caption .icon:not(.expand) { --kb-tree-icon: url('app/ext/kevin-branding/images/tree-plug.svg'); }
 
 .connection > .caption .icon.rdp,
-.connection > .caption .icon.vnc {
-    background-image: url('app/ext/kevin-branding/images/tree-monitor.svg') !important;
-}
+.connection > .caption .icon.vnc { --kb-tree-icon: url('app/ext/kevin-branding/images/tree-monitor.svg'); }
 
 .connection > .caption .icon.ssh,
 .connection > .caption .icon.telnet,
-.connection > .caption .icon.kubernetes {
-    background-image: url('app/ext/kevin-branding/images/tree-terminal.svg') !important;
-}
+.connection > .caption .icon.kubernetes { --kb-tree-icon: url('app/ext/kevin-branding/images/tree-terminal.svg'); }
 
-.icon.user:not(.add) {
-    background-image: url('app/ext/kevin-branding/images/tree-user.svg') !important;
-}
+.icon.user:not(.add) { --kb-tree-icon: url('app/ext/kevin-branding/images/tree-user.svg'); }
+.icon.user-group:not(.add) { --kb-tree-icon: url('app/ext/kevin-branding/images/tree-user-group.svg'); }
 
-.icon.user-group:not(.add) {
-    background-image: url('app/ext/kevin-branding/images/tree-user-group.svg') !important;
-}
-
-/* Ordner im Datei-Browser (Shared Drive) im selben Blau; der
-   „.."-Hoch-Ordner (.previous) behält sein Stock-Pfeilbild */
-.file-browser .directory:not(.previous) > .caption .icon {
-    background-image: url('app/ext/kevin-branding/images/tree-folder.svg') !important;
-}
+/* Ordner im Datei-Browser (Shared Drive); der „.."-Hoch-Ordner (.previous)
+   behält sein Stock-Pfeilbild */
+.file-browser .directory:not(.previous) > .caption .icon { --kb-tree-icon: url('app/ext/kevin-branding/images/tree-folder.svg'); }
 
 /* Checkboxen in Berechtigungsbäumen (manage-user) nicht kleben lassen */
 .list-item .caption input[type="checkbox"] {
@@ -1036,6 +1251,48 @@ div.settings {
 .preferences .section.locale .fields > .labeled-field:nth-of-type(1) .field-header { --kb-field-icon: url('app/ext/kevin-branding/images/field-globe.svg'); }
 .preferences .section.locale .fields > .labeled-field:nth-of-type(2) .field-header { --kb-field-icon: url('app/ext/kevin-branding/images/tab-history.svg'); }
 
+/* Farbschema (HTML-Patch, M11) genau wie die Locale-Zeilen: kompakte Zeile mit
+   Icon statt seitenbreitem Select. Ohne diese Regeln griffe die generische
+   guac-form-Zeile, die Selects vollbreit unter das Label legt – neben den
+   schmalen Nachbarzeilen wirkt das wie ein Fremdkörper. */
+.preferences .section.appearance .kevin-theme-group {
+    margin: 0;
+}
+
+.preferences .section.appearance .kevin-theme-field {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+}
+
+.preferences .section.appearance .kevin-theme-field .field-header {
+    padding: 0;
+    flex: 0 0 auto;
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+}
+
+.preferences .section.appearance .kevin-theme-field .field-header::before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+    background: var(--kb-text-secondary);
+    -webkit-mask: url('app/ext/kevin-branding/images/field-contrast.svg') center / contain no-repeat;
+    mask: url('app/ext/kevin-branding/images/field-contrast.svg') center / contain no-repeat;
+}
+
+.preferences .section.appearance .kevin-theme-field .form-field {
+    width: auto !important;
+}
+
+.preferences .section.appearance .kevin-theme-select {
+    width: auto;
+    min-width: 220px;
+}
+
 /* Leertext der Tabellen („Keine aktiven Sitzungen") wie Keeper: ruhiges
    Dunkelgrau, als Tabellenzeile mit Trennlinie darunter */
 .settings p.placeholder {
@@ -1082,7 +1339,7 @@ div.settings {
 .manage-user.view,
 .manage-user-group.view,
 .manage-sharing-profile.view {
-    background: #F4F6FA;
+    background: var(--kb-view-bg);
     min-height: 100%;
     padding-bottom: 40px;
 }
@@ -1097,9 +1354,9 @@ div.settings {
 .manage-sharing-profile.view > *:not(:first-child) {
     max-width: 560px;
     margin: 0 auto !important;
-    background: #ffffff;
-    border-left: 1px solid #E9ECF1;
-    border-right: 1px solid #E9ECF1;
+    background: var(--kb-bg);
+    border-left: 1px solid var(--kb-border-subtle);
+    border-right: 1px solid var(--kb-border-subtle);
     border-top: none;
     border-bottom: none;
     border-radius: 0;
@@ -1115,7 +1372,7 @@ div.settings {
 .manage-connection.view > *:nth-child(2),
 .manage-connection-group.view > *:nth-child(2),
 .manage-sharing-profile.view > *:nth-child(2) {
-    border-top: 1px solid #E9ECF1;
+    border-top: 1px solid var(--kb-border-subtle);
     border-radius: 10px 10px 0 0;
     margin-top: 24px !important;
     padding-top: 24px;
@@ -1128,7 +1385,7 @@ div.settings {
 .manage-user.view > *:last-child,
 .manage-user-group.view > *:last-child,
 .manage-sharing-profile.view > *:last-child {
-    border-bottom: 1px solid #E9ECF1;
+    border-bottom: 1px solid var(--kb-border-subtle);
     border-radius: 0 0 10px 10px;
     padding-bottom: 24px;
     box-shadow: 16px 0 12px -12px rgba(15, 30, 61, 0.14), -16px 0 12px -12px rgba(15, 30, 61, 0.14), 0 16px 12px -12px rgba(15, 30, 61, 0.14);
@@ -1137,7 +1394,7 @@ div.settings {
 /* Benutzer/Gruppe: das gesamte Formular steckt in EINEM div – volle Karte */
 .manage-user.view > div:last-child,
 .manage-user-group.view > div:last-child {
-    border-top: 1px solid #E9ECF1;
+    border-top: 1px solid var(--kb-border-subtle);
     border-radius: 10px;
     margin-top: 16px !important;
     padding-top: 20px;
@@ -1152,7 +1409,7 @@ div.settings {
 .manage-user.view > h2.header,
 .manage-user-group.view > h2.header,
 .manage-sharing-profile.view > h2.header {
-    background: #ffffff !important;
+    background: var(--kb-bg) !important;
     box-shadow: none !important;
     padding-top: 18px;
     padding-bottom: 4px;
@@ -1254,7 +1511,7 @@ div.settings {
        und verkleinert auf .8em – Metrik wie die echten Eingabefelder */
     max-width: 100% !important;
     box-sizing: border-box;
-    background: #ffffff;
+    background: var(--kb-bg);
     border: 1px solid var(--kb-border-strong);
     border-radius: 6px;
     padding: 6px 10px;
@@ -1406,7 +1663,7 @@ div.settings {
     min-width: 30px;
     padding: 5px 8px;
     text-align: center;
-    background: #ffffff;
+    background: var(--kb-bg);
     border: 1px solid var(--kb-border);
     border-radius: 6px;
     color: var(--kb-text) !important;
@@ -1431,7 +1688,7 @@ div.settings {
        Höhe der Seitenzahlen (30px) anheben */
     width: 30px;
     height: 30px;
-    background: #ffffff;
+    background: var(--kb-bg);
     border: 1px solid var(--kb-border);
     border-radius: 6px;
     margin: 0 2px;
@@ -1566,9 +1823,12 @@ div.settings {
     box-shadow: none !important;
 }
 
+/* Sichtbare Kante statt randloser Fläche: Die Buttons schweben auf dem
+   abgedunkelten Sitzungsbild, nicht auf einer Karte – ohne Kontur verschwimmen
+   sie im dunklen Modus mit dem Hintergrund. */
 .client-status-modal .notification .buttons button {
-    background: #ffffff !important;
-    border: 1px solid #ffffff !important;
+    background: var(--kb-surface-2) !important;
+    border: 1px solid var(--kb-border-strong) !important;
     color: var(--kb-text) !important;
     font-weight: 600;
     padding-top: 8px;
@@ -1576,23 +1836,44 @@ div.settings {
 }
 
 .client-status-modal .notification .buttons button:hover {
-    background: #E2E8F0 !important;
-    border-color: #E2E8F0 !important;
+    background: var(--kb-surface-2-hover) !important;
+    border-color: var(--kb-surface-2-hover) !important;
 }
 
-/* Stock legt auf home/reconnect/logout-Buttons ::before-Icons in WEISS
-   (für seine dunklen Buttons) – auf den hellen Kevin-Buttons unsichtbar.
-   brightness(0) dreht sie auf Schwarz, passend zu Text und Accent. */
+/* Eigene Icons für home/reconnect/logout statt der Stock-Bilder: als mask in
+   currentColor, damit sie der Textfarbe des jeweiligen Buttons folgen – weiss
+   auf den dunklen Knöpfen, navy auf dem gelben „Abmelden“, und das in beiden
+   Farbschemata ohne Sonderregel.
+   Vorher lagen hier Stocks WEISSE ::before-Bilder unter `filter:brightness(0)`
+   – auf hellen Buttons richtig, im dunklen Modus schwarz auf schwarz. */
 .client-status-modal .notification .buttons button::before {
-    filter: brightness(0);
-    opacity: .8;
+    background: currentColor !important;
+    background-image: none !important;
+    /* Feste 16px statt `contain`: Stocks ::before ist absolut positioniert und
+       so hoch wie der Button (25×34) – eine füllende mask liefe bis an die
+       Textkante. */
+    -webkit-mask: var(--kb-status-icon) center / 16px 16px no-repeat;
+    mask: var(--kb-status-icon) center / 16px 16px no-repeat;
+    filter: none !important;
+    opacity: 1;
 }
+
+/* Luft zwischen Icon und Beschriftung: Stocks Polsterung ist auf sein
+   schmaleres Bild gerechnet. */
+.client-status-modal .notification .buttons button {
+    padding-left: 32px !important;
+    padding-right: 14px !important;
+}
+
+.client-status-modal .notification .buttons button.home { --kb-status-icon: url('app/ext/kevin-branding/images/status-home.svg'); }
+.client-status-modal .notification .buttons button.reconnect { --kb-status-icon: url('app/ext/kevin-branding/images/status-reconnect.svg'); }
+.client-status-modal .notification .buttons button.logout { --kb-status-icon: url('app/ext/kevin-branding/images/status-logout.svg'); }
 
 /* „Abmelden" als Marken-Button (Keeper: Gelb) – Navy-Text auf Accent */
 .client-status-modal .notification .buttons button.logout {
     background: var(--kb-accent) !important;
     border-color: var(--kb-accent) !important;
-    color: var(--kb-navy) !important;
+    color: var(--kb-accent-text) !important;
 }
 
 /* Marke unter den Buttons (Keeper zeigt dort das Logo) … */
@@ -1645,7 +1926,7 @@ div.settings {
     /* Stocks .notification-Grundregel malt rgba(40,40,40,.75) + Weiß;
        unsere eigene .notification-Regel setzt border/shadow mit
        !important – hier ebenso, sonst verliert die Karte gegen sie */
-    background: #ffffff !important;
+    background: var(--kb-bg) !important;
     color: var(--kb-text) !important;
     border: none !important;
     border-radius: 10px;
@@ -1699,7 +1980,7 @@ div.settings {
 /* Menü (Strg+Alt+Shift): Stock-Grau → Weiß; die Navy-Kopfzeile kommt
    bereits über die .header-Regel */
 #guac-menu {
-    background: #ffffff !important;
+    background: var(--kb-bg) !important;
 }
 
 /* Zwischenablage-Feld: nur Rahmen angleichen – die transparente
@@ -1799,7 +2080,7 @@ div.settings {
    grauem Stock-Kasten. NUR background-color setzen – das Shorthand
    würde Stocks drive.svg-Icon (background-image der Kachel) löschen */
 #guac-menu .device {
-    background-color: #ffffff !important;
+    background-color: var(--kb-bg) !important;
     background-position: 14px center !important;
     background-size: 18px 18px !important;
     border: 1px solid var(--kb-border) !important;
@@ -1856,7 +2137,7 @@ div.settings {
 .guac-keyboard.guac-keyboard-modifier-super .guac-keyboard-key-super {
     background: var(--kb-accent) !important;
     border-color: var(--kb-accent) !important;
-    color: var(--kb-navy) !important;
+    color: var(--kb-accent-text) !important;
 }
 
 /* ---------- Verbindungs-Dropdown im Sitzungsmenü ----------
@@ -1894,7 +2175,7 @@ div.settings {
     flex: 1 1 100%;
     margin: 0;
     padding: 12px 16px;
-    background: #ffffff;
+    background: var(--kb-bg);
     border-top: 2px solid var(--kb-accent);
 }
 
@@ -1907,7 +2188,7 @@ div.settings {
 /* Das geschlossene Feld: weißes Eingabefeld in der Navy-Bar */
 #guac-menu .connection-select-menu .menu-dropdown {
     display: block;
-    background: #ffffff;
+    background: var(--kb-bg);
     border: 1px solid var(--kb-border-strong) !important;
     border-radius: 6px;
     cursor: pointer;
@@ -1932,7 +2213,7 @@ div.settings {
    text-transform zurücksetzen – der Baum erbt sonst das VERSAL der
    Kopfzeilen-h2 (Gruppen erschienen als „KEVIN"/„T0-SERVER") */
 #guac-menu .connection-select-menu .menu-dropdown .menu-contents {
-    background: #ffffff !important;
+    background: var(--kb-bg) !important;
     border: none !important;
     border-radius: 0 0 8px 8px;
     box-shadow: var(--kb-shadow-menu) !important;
@@ -2004,7 +2285,7 @@ div.settings {
 /* ---------- Standort-Wähler (Verbindungs-/Gruppenformular) ---------- */
 
 .location-chooser .dropdown {
-    background: #ffffff !important;
+    background: var(--kb-bg) !important;
     border: 1px solid var(--kb-border) !important;
     border-radius: 6px;
     box-shadow: var(--kb-shadow-menu) !important;
@@ -2025,7 +2306,7 @@ select,
 textarea {
     border: 1px solid var(--kb-border-strong);
     border-radius: 6px;
-    background-color: #ffffff;
+    background-color: var(--kb-bg);
     color: var(--kb-text);
     font-size: 14px;
     font-family: inherit;

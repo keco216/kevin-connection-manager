@@ -4,7 +4,11 @@
     },
     "KEVIN" : {
         "NAV_CONNECTIONS" : "My Connections",
-        "NAV_SETTINGS" : "Settings"
+        "NAV_SETTINGS" : "Settings",
+        "FIELD_HEADER_THEME" : "Color scheme:",
+        "THEME_SYSTEM" : "Follow system",
+        "THEME_LIGHT" : "Light",
+        "THEME_DARK" : "Dark"
     },
     "CLIENT" : {
         "TEXT_CLIENT_STATUS_CONNECTING" : "Connecting to Kevin Connection Manager...",

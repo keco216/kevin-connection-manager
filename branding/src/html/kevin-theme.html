@@ -1,0 +1,30 @@
+<!-- Farbschema-Wahl in der Sektion „Darstellung“ der Präferenzen.
+     Offizieller Extension-Mechanismus (HTML-Patch): wird vor dem
+     Angular-Compile ans Ende von .settings.section.appearance gehängt,
+     deshalb funktionieren translate-Attribute.
+
+     Guacamole 1.6 kennt kein Farbschema – der Wert gehört uns allein und
+     liegt im localStorage. Verdrahtet wird das Feld von js/kevin-theme.js;
+     ohne dieses JS bliebe hier ein totes Auswahlfeld stehen.
+
+     EIN Patch-File = EIN Markup-Block: Für weitere Einfügungen ein eigenes
+     File anlegen, sonst landet dieser Block mehrfach im DOM. -->
+<meta name="after-children" content=".settings.section.appearance">
+<div class="form-group kevin-theme-group">
+    <div class="form">
+        <div class="fields">
+            <div class="labeled-field kevin-theme-field">
+                <div class="field-header">
+                    <label for="kevin-theme-select" translate="KEVIN.FIELD_HEADER_THEME"></label>
+                </div>
+                <div class="form-field">
+                    <select id="kevin-theme-select" class="kevin-theme-select">
+                        <option value="system" translate="KEVIN.THEME_SYSTEM"></option>
+                        <option value="light" translate="KEVIN.THEME_LIGHT"></option>
+                        <option value="dark" translate="KEVIN.THEME_DARK"></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

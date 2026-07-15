@@ -6,10 +6,12 @@
         "css/kevin.css"
     ],
     "html": [
-        "html/kevin-nav.html"
+        "html/kevin-nav.html",
+        "html/kevin-theme.html"
     ],
     "js": [
-        "js/kevin-favicon.js"
+        "js/kevin-favicon.js",
+        "js/kevin-theme.js"
     ],
     "translations": [
         "translations/en.json",
@@ -46,6 +48,10 @@
         "images/menu-logout.svg": "image/svg+xml",
         "images/menu-disconnect.svg": "image/svg+xml",
         "images/field-globe.svg": "image/svg+xml",
+        "images/field-contrast.svg": "image/svg+xml",
+        "images/status-home.svg": "image/svg+xml",
+        "images/status-reconnect.svg": "image/svg+xml",
+        "images/status-logout.svg": "image/svg+xml",
         "images/pager-chevron.svg": "image/svg+xml",
         "images/pager-chevron-double.svg": "image/svg+xml",
         "images/menu-fullscreen.svg": "image/svg+xml"

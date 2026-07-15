@@ -1,4 +1,4 @@
-# Kevin Branding – Theme-Extension für die Original-Guacamole-UI (M7 v1 + M7.1)
+# Kevin Branding – Theme-Extension für die Original-Guacamole-UI (M7 v1, M7.1, M11)
 
 Bringt die unter `/guacamole/` erreichbare Original-UI (Admin-Fallback) ins Kevin-Design:
 Navy-Hintergrund und K-Logo auf dem Login, Kopfleiste in Navy mit gelbem Akzent,
@@ -13,6 +13,57 @@ Keeper-Look, Bildschirmtastatur, Recording-Player und die Sonderansichten der in
 - `branding/src/` – Quellen der Extension; `guac-manifest.json` muss im **Root** der
   .jar liegen (deshalb wird aus `src/` heraus gepackt)
 - `guacamole-home/extensions/kevin-branding-1.0.0.jar` – gebaute Extension
+
+## Dunkler Modus (M11)
+
+Umschaltbar unter *Einstellungen → Darstellung → Farbschema*: **Wie im System**
+(Vorgabe), **Hell**, **Dunkel**. Das Feld liefert der HTML-Patch
+`html/kevin-theme.html`, verdrahtet wird es von `js/kevin-theme.js`; die Wahl
+liegt im `localStorage` (`kevin-theme`).
+
+**Das Attribut `data-kb-theme` am `<html>` steuert alles** – und es wird IMMER
+gesetzt, auch bei „Wie im System": Das JS löst die Systemvorgabe per
+`matchMedia` selbst auf und horcht auf Änderungen. Dadurch steht die dunkle
+Palette in `kevin.css` nur EINMAL. Der naheliegende Weg über eine zusätzliche
+`@media (prefers-color-scheme: dark)`-Query bedeutete dieselbe Werteliste zum
+doppelt Pflegen – bewusst verworfen.
+
+Die Palette lebt vollständig in `--kb-*`-Variablen; Flächen sind Grau/Schwarz,
+Text weiß, **Marken-Gelb und Primärblau bleiben unverändert** aus dem hellen
+Modus. Achtung bei der umgekehrten Flächen-Logik: Im Hellen ist `--kb-surface`
+DUNKLER als `--kb-bg` (abgesetztes Grau auf Weiß), im Dunklen HELLER (erhöhte
+Fläche auf Schwarz).
+
+### Was dabei zu lernen war
+
+- **Icons als `background-image` können nicht aufhellen.** Ein SVG, das als
+  Bild eingebunden ist, trägt seine Farbe im Dateiinhalt und kennt weder
+  `currentColor` noch unsere Variablen – im dunklen Modus verschwinden solche
+  Icons. Richtig ist `mask` + Farbe aus der CSS (`--kb-icon` bzw.
+  `currentColor`). Das gilt auch für **Stocks eigene** Icons: `magnifier.svg`,
+  `down.svg` und `warning.svg` (letzteres hat `fill:#000`) werden nur noch als
+  FORM verwendet und selbst eingefärbt. `scripts/icon-verify.mjs` findet
+  Rückfälle.
+- **`<input>` kann keine Pseudo-Elemente tragen** – das Lupen-Icon des
+  Filterfelds musste deshalb ans `.filter`-Elternteil (dessen Box ist
+  deckungsgleich mit dem Feld, Stock-Metrik: `left:3.5px`, 24.5px).
+- **Am Link mit Text geht keine `mask`** (sie maskiert den Text mit) – die
+  Menü-Icons hängen deshalb an einem `::before` (Stock-Metrik: `left:16px`,
+  16px).
+- **Stock nagelt Baum-/Kachelnamen auf `color:#000`** (`.connection a`,
+  `.connection-group a`, `.user a`, je mit `:hover`/`:visited`). Da unser CSS
+  VOR Stock lädt, muss die Textfarbe dort erzwungen werden – sonst steht der
+  Kachelname schwarz auf fast schwarzem Grund.
+- **Die Zwischenablage im Sitzungsmenü** (`textarea.clipboard`) zielt
+  spezifischer als die generische Feld-Metrik und blieb deshalb weiß.
+- **Inaktive Buttons** brauchen eigene Variablen (`--kb-disabled-*`):
+  Randfarbe auf Faint-Text ergibt im Dunklen nur ~2,5:1.
+- **`color-scheme: dark`** am `:root` – sonst malt Chromium die
+  Bildlaufleisten hellgrau quer über die Seite.
+- **Statusdialog-Icons** liegen bei Stock als weiße Bilder unter
+  `filter: brightness(0)` (für helle Buttons gedacht). Ersetzt durch eigene
+  `status-*.svg` als mask in `currentColor` – damit folgen sie der Textfarbe
+  des Buttons und stimmen in beiden Modi ohne Sonderregel.
 
 ## HTML-Patches (App-Bar-Navigation)
 
