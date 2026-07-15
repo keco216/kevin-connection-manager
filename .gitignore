@@ -8,6 +8,9 @@ initdb/*.sql
 node_modules/
 scripts/e2e-screenshots/
 
+# Fertige Installationspakete des Desktop-Clients
+desktop/dist/
+
 # Inhalt des virtuellen Guacamole-Laufwerks (guacd-Volume /drive, M5.2)
 drive/
 

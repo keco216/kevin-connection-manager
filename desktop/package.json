@@ -1,0 +1,37 @@
+{
+  "name": "kcm-desktop",
+  "version": "1.0.0",
+  "description": "Kevin Connection Manager – Desktop-Client (Electron-Wrapper um die gebrandete Guacamole-Oberfläche)",
+  "author": "Kevin Colic <kevincolic@outlook.com>",
+  "license": "MIT",
+  "private": true,
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --windows"
+  },
+  "build": {
+    "appId": "cloud.kcolic.kcm",
+    "productName": "Kevin Connection Manager",
+    "files": [
+      "src/**/*",
+      "build/icon.png"
+    ],
+    "win": {
+      "target": "msi",
+      "icon": "build/icon.png"
+    },
+    "msi": {
+      "oneClick": false,
+      "perMachine": true,
+      "runAfterFinish": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Kevin Connection Manager"
+    }
+  },
+  "devDependencies": {
+    "electron": "^43.1.1",
+    "electron-builder": "^26.15.3"
+  }
+}

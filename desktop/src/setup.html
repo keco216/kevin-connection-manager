@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <!-- Streng, weil diese Seite lokal liegt und die einzige ist, die wir
+         selbst ausliefern: nichts nachladen, keine fremden Quellen. -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'unsafe-inline'; script-src 'self'; img-src data:;"
+    />
+    <title>Kevin Connection Manager – Einrichtung</title>
+    <style>
+      /* Werte gespiegelt aus branding/src/css/kevin.css (--kb-*). Bewusst
+         dupliziert: Diese Ansicht erscheint, BEVOR ein Server bekannt ist –
+         sie kann das Extension-CSS also nicht laden. */
+      :root {
+        --kb-navy: #0f1e3d;
+        --kb-primary: #1d4ed8;
+        --kb-primary-hover: #1e40af;
+        --kb-accent: #facc15;
+        --kb-text: #1f2937;
+        --kb-muted: #6b7280;
+        --kb-border: #d1d5db;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--kb-navy);
+        /* IBM Plex liegt in der Extension auf dem Server – hier greifen die
+           System-Schriften, die dem Look am nächsten kommen. */
+        font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+        color: var(--kb-text);
+        user-select: none;
+      }
+
+      .card {
+        width: 400px;
+        padding: 40px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgb(0 0 0 / 35%);
+      }
+
+      .logo {
+        display: block;
+        margin: 0 auto 24px;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 20px;
+        font-weight: 600;
+        text-align: center;
+      }
+
+      p.intro {
+        margin: 0 0 28px;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--kb-muted);
+        text-align: center;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      input {
+        width: 100%;
+        height: 32px;
+        padding: 0 10px;
+        border: 1px solid var(--kb-border);
+        border-radius: 4px;
+        font: inherit;
+        font-size: 14px;
+        user-select: text;
+      }
+
+      input:focus {
+        outline: 2px solid var(--kb-primary);
+        outline-offset: 1px;
+        border-color: var(--kb-primary);
+      }
+
+      button {
+        width: 100%;
+        height: 34px;
+        margin-top: 24px;
+        border: 0;
+        border-radius: 4px;
+        background: var(--kb-accent);
+        color: var(--kb-navy);
+        font: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: #eab308;
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: default;
+      }
+
+      .error {
+        margin-top: 16px;
+        padding: 10px 12px;
+        border-left: 3px solid #dc2626;
+        background: #fef2f2;
+        font-size: 13px;
+        color: #991b1b;
+      }
+
+      .error[hidden] {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <svg class="logo" viewBox="0 0 96 96" width="56" height="56" aria-hidden="true">
+        <rect width="96" height="96" rx="18" fill="#0F1E3D" />
+        <path d="M30 20 L30 76 L41 76 L41 55 L46 49.5 L61 76 L74 76 L54 42 L72 20 L58.5 20 L41 42.5 L41 20 Z" fill="#FACC15" />
+      </svg>
+
+      <h1>Kevin Connection Manager</h1>
+      <p class="intro">Adresse des Gateways eingeben. Sie wird gespeichert und beim nächsten Start direkt geöffnet.</p>
+
+      <form id="setup-form">
+        <label for="server-url">Server-Adresse</label>
+        <input
+          id="server-url"
+          type="url"
+          placeholder="https://guacamole.example.com"
+          autocomplete="off"
+          spellcheck="false"
+          required
+          autofocus
+        />
+        <button type="submit" id="submit">Verbinden</button>
+      </form>
+
+      <p class="error" id="error" hidden></p>
+    </main>
+
+    <script src="setup.js"></script>
+  </body>
+</html>
