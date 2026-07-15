@@ -1,9 +1,16 @@
-# Release-Workflow: läuft bei Versions-Tags (v*). Baut das Guacamole-Image
-# mit eingebauter Branding-Extension und pusht es UNVERÄNDERLICH unter dem
-# Versions-Tag (Rollback-Punkt) – die wandernden Tags 1.6.0/latest verwaltet
-# weiterhin build-image.yml auf main. Existiert zum Tag noch kein
-# GitHub-Release, wird eines mit automatischen Notes erstellt; in beiden
-# Fällen wird die Extension-.jar als Asset hinterlegt.
+# Release-Workflow: läuft bei Versions-Tags (v*). Er baut das Guacamole-Image
+# NICHT neu, sondern hängt den Versions-Tag an das vorhandene Image – ein
+# zweiter Build erzeugt sonst einen zweiten Digest mit identischem Inhalt, und
+# die Paketseite zeigt zwei Einträge für denselben Stand. So trägt EIN Image
+# die Tags latest, 1.6.0 und vX.Y.Z; der Versions-Tag bleibt der Rollback-Punkt.
+#
+# Dazu baut er den Windows-Desktop-Client und hängt MSI und Branding-Extension
+# als Release-Assets an.
+#
+# Reihenfolge beim Veröffentlichen: erst nach main pushen und
+# "Guacamole-Image mit Branding" abwarten (falls die Extension sich geändert
+# hat), dann den Tag setzen – sonst zeigt der Versions-Tag auf den vorherigen
+# Stand von latest.
 name: Release
 
 on:
@@ -16,36 +23,74 @@ permissions:
   packages: write
 
 jobs:
-  release:
+  image:
+    name: Versions-Tag an das vorhandene Image hängen
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
       - uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: ghcr.io/keco216/kcm-guacamole:${{ github.ref_name }}
-          labels: |
-            org.opencontainers.image.source=https://github.com/keco216/kevin-connection-manager
-            org.opencontainers.image.version=${{ github.ref_name }}
-            org.opencontainers.image.description=Apache Guacamole 1.6.0 mit Kevin-Branding-Extension (Keeper-Look)
+      - name: Tag setzen (kein Neu-Bau, gleicher Digest)
+        run: |
+          IMAGE=ghcr.io/keco216/kcm-guacamole
+          if ! docker buildx imagetools inspect "$IMAGE:latest" >/dev/null 2>&1; then
+            echo "::error::$IMAGE:latest existiert nicht – zuerst build-image.yml laufen lassen."
+            exit 1
+          fi
+          docker buildx imagetools create --tag "$IMAGE:${{ github.ref_name }}" "$IMAGE:latest"
+          echo "Digest von ${{ github.ref_name }}:"
+          docker buildx imagetools inspect "$IMAGE:${{ github.ref_name }}" --format '{{.Manifest.Digest}}'
 
-      - name: GitHub-Release sicherstellen und Extension-Jar anhängen
+  desktop:
+    name: Windows-Desktop-Client bauen
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Abhängigkeiten
+        working-directory: desktop
+        run: npm ci
+
+      - name: MSI bauen
+        working-directory: desktop
+        run: npm run dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: desktop-msi
+          path: desktop/dist/*.msi
+          if-no-files-found: error
+
+  release:
+    name: Release veröffentlichen
+    needs: [image, desktop]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: desktop-msi
+          path: assets
+
+      - name: Branding-Extension dazulegen
+        run: cp guacamole-home/extensions/kevin-branding-1.0.0.jar assets/
+
+      - name: Release anlegen bzw. Assets ergänzen
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG="${{ github.ref_name }}"
-          JAR="guacamole-home/extensions/kevin-branding-1.0.0.jar"
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release upload "$TAG" "$JAR" --clobber --repo "$GITHUB_REPOSITORY"
+            gh release upload "$TAG" assets/* --clobber --repo "$GITHUB_REPOSITORY"
           else
-            gh release create "$TAG" "$JAR" --verify-tag --generate-notes \
+            gh release create "$TAG" assets/* --verify-tag --generate-notes \
               --title "$TAG" --repo "$GITHUB_REPOSITORY"
           fi

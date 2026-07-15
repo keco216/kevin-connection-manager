@@ -22,6 +22,8 @@ aufsteckbare Extension. **Kein Fork, keine Image-Modifikation.**
   und Icons aus einem Guss; Oberfläche auf Deutsch und Englisch
 - **Eingebettete Schrift** – IBM Plex wird aus der Extension ausgeliefert,
   keine externen Abhängigkeiten zur Laufzeit
+- **Desktop-Client für Windows** – optionales Fenster um dieselbe Oberfläche,
+  ohne Browser-Tastenkürzel in der Sitzung ([`desktop/`](desktop/))
 - **Fertiges Image** – `ghcr.io/keco216/kcm-guacamole`, gebaut per GitHub Action
 - **Deployment-fertig** – Compose-Stack für die Entwicklung, Portainer-Stack für den Server
 
@@ -48,6 +50,19 @@ hält ihn damit automatisch aktuell. Zum Festnageln einer Version
 stattdessen ein `vX.Y.Z`-Tag aus den
 [Releases](https://github.com/keco216/kevin-connection-manager/releases)
 eintragen.
+
+## Desktop-Client (optional)
+
+Der Browser genügt vollkommen – wer die Oberfläche lieber als eigenständiges
+Fenster möchte, findet in jedem
+[Release](https://github.com/keco216/kevin-connection-manager/releases) eine
+`.msi` für Windows. Sie bringt die Oberfläche nicht mit, sondern lädt sie vom
+Gateway; die Adresse wird beim ersten Start abgefragt. Ihr Nutzen liegt darin,
+dass Browser-Tastenkürzel wie Strg+W oder F11 in der Sitzung landen statt im
+Browser. Quellen und Details: [`desktop/`](desktop/).
+
+Das Paket ist nicht signiert – SmartScreen warnt beim ersten Start
+entsprechend.
 
 ## Anpassen
 
