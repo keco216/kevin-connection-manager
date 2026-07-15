@@ -82,6 +82,18 @@ jobs:
         working-directory: desktop
         run: npm ci
 
+      # Die Version MUSS aus dem Tag kommen: Windows entscheidet anhand der
+      # ProductVersion, ob ein Update installiert wird. Bliebe sie über
+      # Releases hinweg gleich, verweigerte msiexec jedes Upgrade stumm.
+      # In package.json steht die Entwicklungsversion; verschoben wird nur hier.
+      - name: Version aus dem Tag übernehmen
+        working-directory: desktop
+        shell: bash
+        run: |
+          VERSION="${TAG#v}"
+          npm version "$VERSION" --no-git-tag-version --allow-same-version
+          echo "MSI-Version: $VERSION"
+
       - name: MSI bauen
         working-directory: desktop
         run: npm run dist
