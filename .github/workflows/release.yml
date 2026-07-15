@@ -17,38 +17,62 @@ on:
   push:
     tags:
       - "v*"
+  # Zum Nachziehen, wenn ein Tag schon steht (etwa nach einer Korrektur hier).
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Versions-Tag, z. B. v1.1.0"
+        required: true
 
 permissions:
   contents: write
   packages: write
+
+env:
+  # Bei workflow_dispatch ist github.ref_name der Branch, nicht der Tag.
+  TAG: ${{ inputs.tag || github.ref_name }}
+  IMAGE: ghcr.io/keco216/kcm-guacamole
 
 jobs:
   image:
     name: Versions-Tag an das vorhandene Image hängen
     runs-on: ubuntu-latest
     steps:
-      - uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      # crane setzt den Tag auf den VORHANDENEN Digest. Wichtig: `docker buildx
+      # imagetools create` taugt hier nicht – es legt eine neue Manifest-Liste
+      # an, die einen eigenen Digest bekommt, und die Paketseite zeigt dann
+      # erneut einen zweiten Eintrag für denselben Inhalt.
+      - uses: imjasonh/setup-crane@v0.4
 
-      - name: Tag setzen (kein Neu-Bau, gleicher Digest)
+      - name: Anmelden
+        run: crane auth login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tag setzen und gegenprüfen
         run: |
-          IMAGE=ghcr.io/keco216/kcm-guacamole
-          if ! docker buildx imagetools inspect "$IMAGE:latest" >/dev/null 2>&1; then
+          if ! crane manifest "$IMAGE:latest" >/dev/null 2>&1; then
             echo "::error::$IMAGE:latest existiert nicht – zuerst build-image.yml laufen lassen."
             exit 1
           fi
-          docker buildx imagetools create --tag "$IMAGE:${{ github.ref_name }}" "$IMAGE:latest"
-          echo "Digest von ${{ github.ref_name }}:"
-          docker buildx imagetools inspect "$IMAGE:${{ github.ref_name }}" --format '{{.Manifest.Digest}}'
+
+          crane tag "$IMAGE:latest" "$TAG"
+
+          QUELLE=$(crane digest "$IMAGE:latest")
+          ZIEL=$(crane digest "$IMAGE:$TAG")
+          echo "latest: $QUELLE"
+          echo "$TAG: $ZIEL"
+          if [ "$QUELLE" != "$ZIEL" ]; then
+            echo "::error::Digests weichen ab – der Tag hängt an einem eigenen Image statt an latest."
+            exit 1
+          fi
+          echo "Gleicher Digest – ein Paketeintrag trägt latest, 1.6.0 und $TAG."
 
   desktop:
     name: Windows-Desktop-Client bauen
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
 
       - uses: actions/setup-node@v4
         with:
@@ -74,6 +98,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
 
       - uses: actions/download-artifact@v4
         with:
@@ -87,7 +113,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          TAG="${{ github.ref_name }}"
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release upload "$TAG" assets/* --clobber --repo "$GITHUB_REPOSITORY"
           else
